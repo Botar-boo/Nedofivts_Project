@@ -1,0 +1,62 @@
+#include "Menu.h"
+
+
+const unsigned int menuButtons = 2; //���������� �������� ������ � ����
+
+//������� ��������� ���� ���� � ������������ �������� ������������
+void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
+    // ���� � ���������
+    const std::vector <std::string> tButtonPath = {
+            "images/Play.png",
+            "images/Settings.png"};
+    const std::string tBackgroundPath = "images/GrassGround.png";
+    /*const std::vector <std::string> tButtonPath = {
+            "images/Play.png",
+            "images/Settings.png" };
+    const std::string tBackgroundPath = "images/GrassGround.png";*/
+
+    //�������� �������
+    std::vector <tImages> ButtonTextures(menuButtons);
+    tImages tBackground;
+    //������ ��������� ������ ����
+    const std::vector <vectorF> ButtonPos = { { 384, 200 }, { 816, 528} };
+
+    std::vector <userSprite> Buttons;
+    std::vector <userSprite> Background;
+    bool openSettings = false;
+    bool gameStart = false;
+    vectorU Pos = { 0, 0 };
+
+    loadAdditionalWindowTextures(Buttons, ButtonPos, tButtonPath, ButtonTextures, Background, tBackgroundPath, tBackground);
+    srand(static_cast <unsigned int> (time(0)));
+
+    while (Window.isOpen() && !gameStart) {
+        userEvent e;
+        while (Window.pollEvent(e))
+            if (e.type == userEvent::Closed) {
+                Window.close();
+                exit(0);
+            }
+        vectorF Pos = { 0.f, 0.f };
+        userMouse mouse;
+        if (mouse.buttonPressed('L')) {
+            Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
+        }
+        for (unsigned int i = 0; i < Buttons.size(); i++) {
+            vectorF buttonCenter = { Buttons[i].gGB().left + Buttons[i].gGB().width / 2,
+                                    Buttons[i].gGB().top + Buttons[i].gGB().height / 2 };
+            if ((Pos.y > buttonCenter.y - Buttons[i].gGB().height / 2) &&
+                (Pos.y < buttonCenter.y + Buttons[i].gGB().height / 2) &&
+                (Pos.x > buttonCenter.x - Buttons[i].gGB().width / 2) &&
+                (Pos.x < buttonCenter.x + Buttons[i].gGB().width / 2)) {
+                if (i == 0) gameStart = true; // ������ Play
+                if (i == 1) openSettings = true; // ������ Settings
+            }
+        }
+        if (openSettings) {
+            Settings(Window, gameSettings);
+            openSettings = false;
+        }
+        AdditionalWindowDraw(Window, Buttons, Background);
+    }
+}
