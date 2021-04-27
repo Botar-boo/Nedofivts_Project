@@ -1,0 +1,24 @@
+name: SingletonTest
+
+on:
+  push:
+    branches: [ master, dev, checkpoint_2 ]
+  pull_request:
+    branches: [ master, dev ]
+jobs:
+  runTest:
+    runs-on: [ ubuntu-latest, macos-latest ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: "Build"
+        run : |
+          cd googletest
+          cd googletest
+          cmake ..
+          make
+          make install
+          cd ../../
+          mkdir build
+          cd build
+          cmake ..
+          make
