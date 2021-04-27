@@ -1,8 +1,7 @@
-#include "SingletonTestCase.h"
-#include "Game.h"
+#include "SingletonTest.h"
 
 TEST_F(SingletonTestCase, SingletonTest) {
-Game* instance1 = Game* get_instance();
-Game* instance2 = Game* get_instance();
-ASSERT_EQ(instance1, instance2);
+	Game* game1 = Game::get_instance();
+	Game* game2 = Game::get_instance();
+ASSERT_EQ(game1, game2);
 }
