@@ -7,7 +7,7 @@ on:
     branches: [ master, dev ]
 jobs:
   runTest:
-    runs-on: [ ubuntu-latest, macos-latest ]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: "Build"
