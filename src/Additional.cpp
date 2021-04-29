@@ -4,8 +4,6 @@
 tImages tFireball, tSnowball, tDesolball;
 
 
-// Снаряды
-
 Ball::Ball(vectorF towerPos, int n) {
 
     tFireball.loadTexture("images/Fireball.png");
@@ -31,7 +29,7 @@ vectorF Ball::getPosition() {
     return pos;
 }
 
-// ���������� ��������� � ���������� �� ������� ��� ���������
+
 userCircleShape Ball::getBody() {
     return this->Body;
 }
@@ -95,7 +93,8 @@ DesolBall::DesolBall(vectorF towerPos) :
 
 
 
-// Обновление анимации полета снаряда
+// Animation update
+
 void Ball::Update(float xCreep, float yCreep, float deltaTime) {
     vectorF movement = { 0.0f, 0.0f };
     float deltaX = xCreep - (this->Body.getPos().x + this->Body.gGB().width / 2);

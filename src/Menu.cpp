@@ -3,22 +3,22 @@
 
 const unsigned int menuButtons = 2;
 
-// Меню и логика нажатий
+// Menu logic
+
 void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
-    // Вектор путей до текстур
+    // Commented out piece of code is needed to switch to jpg files
     const std::vector <std::string> tButtonPath = {
             "images/Play.png",
             "images/Settings.png"};
     const std::string tBackgroundPath = "images/GrassGround.png";
     /*const std::vector <std::string> tButtonPath = {
-            "images/Play.png",
-            "images/Settings.png" };
-    const std::string tBackgroundPath = "images/GrassGround.png";*/
+            "images/Play.jpg",
+            "images/Settings.jpg" };
+    const std::string tBackgroundPath = "images/GrassGround.jpg";*/
 
-    //Вектор текстур
     std::vector <tImages> ButtonTextures(menuButtons);
     tImages tBackground;
-    //Вектор координат кнопок
+    
     const std::vector <vectorF> ButtonPos = { { 384, 200 }, { 816, 528} };
 
     std::vector <userSprite> Buttons;

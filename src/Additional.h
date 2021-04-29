@@ -1,9 +1,9 @@
 #pragma once
 #include "AnimationGame.h"
 
-// Файл с вспомогательными объектами
+// Additional objects 
 
-// Карта является специальной структурой, хранящей информацию о пути для крипов, начале и конце
+// Map textures, info about start/end block
 typedef struct MapStr {
     std::vector<std::pair<userSprite, bool>> Grass;
     std::vector<std::pair<userSprite, int>> Road;
@@ -16,7 +16,7 @@ typedef struct GameSettings {
     int MapNumber;
 } GameSettings;
 
-//Класс снарядов
+
 class Ball {
 public:
     Ball(vectorF towerPos, int n);

@@ -1,7 +1,7 @@
 #pragma once 
 #include "Menu.h"
 
-// Запуск программы
+// Start program
 
 int main() {
 	GameSettings gameSettings = { false, 0 };

@@ -2,11 +2,11 @@
 #include "Gameplay.h"
 
 
-// Обработка логики игры
+// Logic proccesing
 
 void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>& Creeps, std::vector <std::pair<Creep, float>>& Dead, float deltaTime, MAP& Map) {
 
-    // Обновление состояния башен
+    // Tower state update
 
     for (auto t : Towers) {
         if (t->Timer > 0) {
@@ -24,12 +24,13 @@ void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>&
         }
     }
 
-    // Обновление состояния крипов
+    // Creep state update
 
     for (unsigned int i = 0; i < Creeps.size(); i++) {
         checkDir(Creeps[i], Map.Road);
     }
-    // Обработка полетов снарядов
+
+    // Ball flight proccesing
 
     for (unsigned int i = 0; i < Creeps.size(); ++i) {
         Creeps[i].Update(deltaTime);
@@ -52,7 +53,7 @@ void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>&
         }
     }
 
-    // Обрабока полученного урона крипами
+    // Getting damage
 
     for (unsigned int i = 0; i < Creeps.size(); ++i) {
         if (Creeps[i].getHealth() <= 0) {
@@ -63,7 +64,9 @@ void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>&
             Creeps[i].killCreep(Creeps, Dead, i, deltaTime);
         }
     }
-    //Обработка мертвых крипов (анимация смерти, очистка памяти)
+
+    // Preparing creep death animation
+
     for (unsigned int i = 0; i < Dead.size(); i++) {
         Dead[i].second -= deltaTime;
         Dead[i].first.Update(deltaTime);
@@ -76,7 +79,7 @@ void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>&
         }
     }
 
-    // Анимация башен
+    // Tower animation proccesing
 
     for (unsigned int i = 0; i < Towers.size(); i++) {
         Towers[i]->Update(deltaTime);
@@ -84,7 +87,7 @@ void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>&
 }
 
 
-// Функция запускает игровой процесс и создает необходимые объекты
+// Starting the gameplay and creating general objects
 
 void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSettings& gameSettings) {
     srand(static_cast <unsigned int> (time(0)));
@@ -95,7 +98,8 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
     std::vector <Tower*> Towers;
     std::vector <Creep> Creeps;
 
-    // Объявление переменных для текстур, музыки и обработки нажатий
+    // Initialization of textures, music and font
+
     tImages tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround;
     std::vector <tImages> Textures = {tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround};
 
@@ -139,7 +143,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
         unsigned int winWave = 0;
 
         for (unsigned int i = 0; i < roundsToWin; ++i) {
-            // Основной игровой цикл
+            // Main loop
             float releaseTime = 0.5f;
             float waitingTime = 10;
             int cnt;

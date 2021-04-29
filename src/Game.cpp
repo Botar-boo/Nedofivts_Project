@@ -1,7 +1,7 @@
 #include "Game.h"
 
 
-//  ласс игра должен существовать в единственном экземпл€ре, дл€ этого был реализован синглтон
+General object that contains all information about current game
 Game* Game::instance;
 
 Game::Game() {}

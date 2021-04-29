@@ -47,7 +47,7 @@ Sameer::Sameer(tImages& Texture, unsigned int waveNumber, userSprite& startBlock
     this->Armor *= (float)pow(armorMul, waveNumber);
 }
 
-// Обработка движения и анимации крипов
+// Preparing creep animation for update
 void Creep::Update(float deltaTime) {
     vectorF movement = { 0.0f, 0.0f };
 

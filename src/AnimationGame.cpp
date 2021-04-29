@@ -12,7 +12,7 @@ Animation::Animation(tImages* texture, vectorU imageCount, float switchTime) {
 }
 
 
-// Обновление анимации в зависимости от времени
+// Units animation update
 void Animation::Update(int row, float deltaTime, bool faceRight) {
     currImage.y = row;
     totalTime += deltaTime;

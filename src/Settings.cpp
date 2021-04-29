@@ -2,7 +2,6 @@
 
 
 void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
-    // Вектор путей до текстур
     const std::vector <std::string> tButtonPath = {
             "images/Eazy.png",
             "images/Hard.png",
@@ -14,10 +13,8 @@ void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
             "images/Back.png" };
     const std::string tBackgroundPath = "images/GrassGround.png";*/
 
-    // Вектор текстур
     std::vector <tImages> ButtonTextures(tButtonPath.size());
     tImages tBackground;
-    //Вектор координат кнопок
     const std::vector <vectorF> ButtonPos = { { 234, 350 }, { 534, 350 }, { 48, 528} };
 
     std::vector <userSprite> Buttons;
@@ -56,7 +53,8 @@ void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
     }
 }
 
-// Прорисовка окна настроек 
+// Additioanl windows rendering
+ 
 void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& Buttons, std::vector<userSprite>& Background) {
     Window.userClear();
     for (auto& Tile : Background) {
@@ -68,7 +66,8 @@ void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& But
     Window.userDisplay();
 }
 
-// Загрузка текстур
+// Loading textures
+
 void loadAdditionalWindowTextures(std::vector <userSprite>& Buttons, const std::vector <vectorF>& ButtonPosition, const std::vector <std::string>& tButtonPath, std::vector <tImages>& ButtonTextures, std::vector <userSprite>& Background, const std::string tBackgroundPath, tImages& tBackground) {
 
     tBackground.loadTexture(tBackgroundPath);

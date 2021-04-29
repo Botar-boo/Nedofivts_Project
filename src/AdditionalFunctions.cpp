@@ -9,7 +9,7 @@ bool epsCirclePos(vectorF Pos1, vectorF Pos2) {
     return ((Pos2.x - Pos1.x) * (Pos2.x - Pos1.x) + (Pos2.y - Pos1.y) * (Pos2.y - Pos1.y) <= Eps * Eps);
 }
 
-// Создание волны крипов на старте раунда
+// Creating creep wave at the begining of the round
 
 void fillCreep(Game* currentGame, std::vector<Creep>& Creeps, MAP& Map, float& releaseTime, float deltaTime, int& cnt, tImages& tSameer, tImages& tBatyr) {
     releaseTime -= deltaTime;
@@ -23,7 +23,7 @@ void fillCreep(Game* currentGame, std::vector<Creep>& Creeps, MAP& Map, float& r
     }
 }
 
-// Отрисовка всех объектов
+// Rendering map, units, additional objects
 void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::vector <Creep>& Creeps, std::vector <Tower*>& Towers, std::vector <std::pair<Creep, float>>& Dead, MAP& Map, userFont& Font) {
     drawMap(App, Map);
 
@@ -54,7 +54,7 @@ void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::v
     if (currentGame->get_gameOver()) App.draw(sGameOver);
 }
 
-// Визуализация объектов в окне
+// Visualization of objects
 void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::vector <Creep>& Creeps, std::vector <Tower*>& Towers, std::vector <std::pair<Creep, float>>& Dead, MAP& Map, userColor& Blue, int& buttonCheck, userFont& Font) {
     App.userClear();
     Draw(currentGame, App, sGameOver, Creeps, Towers, Dead, Map, Font);
@@ -70,7 +70,7 @@ void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, s
 }
 
 
-// Функция, проверяющая нажатия пользователя
+// Check keypress
 void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*>& Towers, std::vector<std::pair<userSprite, bool>>& Grass, int& buttonCheck, std::vector <tImages>& Textures) {
     userKeyboard kBoard;
     if (kBoard.checkButtonPressed('Q')) {
@@ -189,7 +189,7 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
     }
 }
 
-// Добавление новой башни
+// Add new tower to vector
 
 void addNewTower(Game* currentGame, std::vector <Tower*>& Towers, Tower* newTower) {
     Towers.push_back(newTower);
@@ -197,7 +197,7 @@ void addNewTower(Game* currentGame, std::vector <Tower*>& Towers, Tower* newTowe
     currentGame->set_playerGold(-newTower->getPrice());
 }
 
-// Обработка направления движения крипов на поворотах. Эта функция зависит от карты
+// Switching creep directions
 
 void checkDir(Creep& Creep, std::vector <std::pair<userSprite, int>>& Road) {
     int i = 0;
@@ -241,7 +241,7 @@ void checkDir(Creep& Creep, std::vector <std::pair<userSprite, int>>& Road) {
     }
 }
 
-// Очистка памяти, выделенной динамически для башен
+// Clearing memory
 
 void towerClear(std::vector <Tower*>& Towers) {
     for (auto t : Towers) {
@@ -249,8 +249,9 @@ void towerClear(std::vector <Tower*>& Towers) {
     }
 }
 
-// Загрузка текстур
-// Закоментированный кусок кода нужен, чтобы быстро запустить программу с jpg, так как на mac png не хочет работать
+// Loading textures
+// Commented piece of code is needed to load .jpg files
+
 void loadTexture(std::vector <tImages>& Textures, const std::vector <std::string>& texturePath) {
     for (unsigned int i = 0; i < Textures.size(); ++i) {
         Textures[i].loadTexture(texturePath[i]);
