@@ -47,7 +47,7 @@ OnePunchTower::OnePunchTower(tImages& Texture, vectorF pos) :
     ) {
 }
 
-//Обновление анимации
+// Обновление анимации
 void Tower::Update(float deltaTime) {
     Animation.Update(0, deltaTime, faceRight);
     Body.setTextureArea(Animation.uvRect);
@@ -63,8 +63,7 @@ void Tower::setReload(float time) {
 
 void Tower::Fire(Creep& creep) {}
 
-// Переопределения метода Fire() для дочерних классов
-
+// Переопределение метода Fire() для дочерних классов
 void SingleTower::Fire(Creep& creep) {
     FireBall fireball(this->getPosition());
     creep.ballsFollow.push_back(fireball);

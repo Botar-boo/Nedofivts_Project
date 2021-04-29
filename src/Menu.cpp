@@ -1,11 +1,11 @@
 #include "Menu.h"
 
 
-const unsigned int menuButtons = 2; //���������� �������� ������ � ����
+const unsigned int menuButtons = 2;
 
-//������� ��������� ���� ���� � ������������ �������� ������������
+// Меню и логика нажатий
 void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
-    // ���� � ���������
+    // Вектор путей до текстур
     const std::vector <std::string> tButtonPath = {
             "images/Play.png",
             "images/Settings.png"};
@@ -15,10 +15,10 @@ void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
             "images/Settings.png" };
     const std::string tBackgroundPath = "images/GrassGround.png";*/
 
-    //�������� �������
+    //Вектор текстур
     std::vector <tImages> ButtonTextures(menuButtons);
     tImages tBackground;
-    //������ ��������� ������ ����
+    //Вектор координат кнопок
     const std::vector <vectorF> ButtonPos = { { 384, 200 }, { 816, 528} };
 
     std::vector <userSprite> Buttons;
@@ -49,8 +49,8 @@ void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
                 (Pos.y < buttonCenter.y + Buttons[i].gGB().height / 2) &&
                 (Pos.x > buttonCenter.x - Buttons[i].gGB().width / 2) &&
                 (Pos.x < buttonCenter.x + Buttons[i].gGB().width / 2)) {
-                if (i == 0) gameStart = true; // ������ Play
-                if (i == 1) openSettings = true; // ������ Settings
+                if (i == 0) gameStart = true;  // В игру
+                if (i == 1) openSettings = true; // Вернуться в Settings
             }
         }
         if (openSettings) {

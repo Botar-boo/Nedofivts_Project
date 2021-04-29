@@ -23,7 +23,7 @@ void fillCreep(Game* currentGame, std::vector<Creep>& Creeps, MAP& Map, float& r
     }
 }
 
-//Отрисовка всех объектов
+// Отрисовка всех объектов
 void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::vector <Creep>& Creeps, std::vector <Tower*>& Towers, std::vector <std::pair<Creep, float>>& Dead, MAP& Map, userFont& Font) {
     drawMap(App, Map);
 
@@ -54,7 +54,7 @@ void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::v
     if (currentGame->get_gameOver()) App.draw(sGameOver);
 }
 
-//Визуализация объектов в окне
+// Визуализация объектов в окне
 void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::vector <Creep>& Creeps, std::vector <Tower*>& Towers, std::vector <std::pair<Creep, float>>& Dead, MAP& Map, userColor& Blue, int& buttonCheck, userFont& Font) {
     App.userClear();
     Draw(currentGame, App, sGameOver, Creeps, Towers, Dead, Map, Font);
@@ -70,7 +70,7 @@ void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, s
 }
 
 
-// Функция проверяющая нажатия пользователя
+// Функция, проверяющая нажатия пользователя
 void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*>& Towers, std::vector<std::pair<userSprite, bool>>& Grass, int& buttonCheck, std::vector <tImages>& Textures) {
     userKeyboard kBoard;
     if (kBoard.checkButtonPressed('Q')) {
@@ -241,8 +241,8 @@ void checkDir(Creep& Creep, std::vector <std::pair<userSprite, int>>& Road) {
     }
 }
 
+// Очистка памяти, выделенной динамически для башен
 
-//Очистка памяти, выделенной динамически для башен
 void towerClear(std::vector <Tower*>& Towers) {
     for (auto t : Towers) {
         delete t;
@@ -250,9 +250,7 @@ void towerClear(std::vector <Tower*>& Towers) {
 }
 
 // Загрузка текстур
-
-// Закомментированный кусок кода нужен, чтобы быстро запустить программу с jpg, так как на mac png не хочет работать
-
+// Закоментированный кусок кода нужен, чтобы быстро запустить программу с jpg, так как на mac png не хочет работать
 void loadTexture(std::vector <tImages>& Textures, const std::vector <std::string>& texturePath) {
     for (unsigned int i = 0; i < Textures.size(); ++i) {
         Textures[i].loadTexture(texturePath[i]);

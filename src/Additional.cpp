@@ -95,7 +95,7 @@ DesolBall::DesolBall(vectorF towerPos) :
 
 
 
-//��������� ������ � �������� ��������
+// Обновление анимации полета снаряда
 void Ball::Update(float xCreep, float yCreep, float deltaTime) {
     vectorF movement = { 0.0f, 0.0f };
     float deltaX = xCreep - (this->Body.getPos().x + this->Body.gGB().width / 2);

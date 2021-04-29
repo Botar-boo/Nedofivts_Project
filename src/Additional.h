@@ -17,7 +17,6 @@ typedef struct GameSettings {
 } GameSettings;
 
 //Класс снарядов
-
 class Ball {
 public:
     Ball(vectorF towerPos, int n);

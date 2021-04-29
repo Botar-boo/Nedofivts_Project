@@ -31,5 +31,4 @@ private:
     unsigned int waveNumber;
     bool Hard;
 
-    //void startGame(bool Hard);
 };
