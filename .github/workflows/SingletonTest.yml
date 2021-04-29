@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: "Build"
+      - name: "Build and run tests"
         run : |
           git clone https://github.com/google/googletest
           cd googletest
