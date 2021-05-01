@@ -1,0 +1,26 @@
+name: SingletonTest
+
+on:
+  push:
+    branches: [ master, dev, checkpoint_2 ]
+  pull_request:
+    branches: [ master, dev ]
+jobs:
+  runTest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: "Build and run tests"
+        run : |
+          git clone https://github.com/google/googletest
+          cd googletest
+          cd googletest
+          cmake ..
+          make
+          sudo make install
+          cd ../../
+          mkdir build
+          cd build
+          cmake ..
+          make
+          ./Test
