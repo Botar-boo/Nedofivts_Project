@@ -1,4 +1,5 @@
 #pragma once
+
 class Game {
 public:
     static Game* instance;
@@ -31,5 +32,4 @@ private:
     unsigned int waveNumber;
     bool Hard;
 
-    //void startGame(bool Hard);
 };

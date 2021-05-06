@@ -2,7 +2,6 @@
 
 
 void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
-    // ���� � ���������
     const std::vector <std::string> tButtonPath = {
             "images/Eazy.png",
             "images/Hard.png",
@@ -14,10 +13,8 @@ void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
             "images/Back.png" };
     const std::string tBackgroundPath = "images/GrassGround.png";*/
 
-    //�������� �������
     std::vector <tImages> ButtonTextures(tButtonPath.size());
     tImages tBackground;
-    //������ ��������� ������ ����
     const std::vector <vectorF> ButtonPos = { { 234, 350 }, { 534, 350 }, { 48, 528} };
 
     std::vector <userSprite> Buttons;
@@ -47,16 +44,17 @@ void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
                 (Pos.y < buttonCenter.y + Buttons[i].gGB().height / 2) &&
                 (Pos.x > buttonCenter.x - Buttons[i].gGB().width / 2) &&
                 (Pos.x < buttonCenter.x + Buttons[i].gGB().width / 2)) {
-                if (i == 0) gameSettings.Hard = false; // ��������� ����������
-                if (i == 1) gameSettings.Hard = true; // ��������� �������
-                if (i == 2) goBack = true; // ��������� � ����
+                if (i == 0) gameSettings.Hard = false; // Простой режим игры
+                if (i == 1) gameSettings.Hard = true; // Сложный режим игры
+                if (i == 2) goBack = true; // Возвращение в menu
             }
             AdditionalWindowDraw(Window, Buttons, Background);
         }
     }
 }
 
-//������� ������������ � ������������� �������
+// Additioanl windows rendering
+ 
 void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& Buttons, std::vector<userSprite>& Background) {
     Window.userClear();
     for (auto& Tile : Background) {
@@ -68,7 +66,8 @@ void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& But
     Window.userDisplay();
 }
 
-//�������� �������
+// Loading textures
+
 void loadAdditionalWindowTextures(std::vector <userSprite>& Buttons, const std::vector <vectorF>& ButtonPosition, const std::vector <std::string>& tButtonPath, std::vector <tImages>& ButtonTextures, std::vector <userSprite>& Background, const std::string tBackgroundPath, tImages& tBackground) {
 
     tBackground.loadTexture(tBackgroundPath);

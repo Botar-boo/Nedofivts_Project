@@ -1,7 +1,8 @@
 #include "Adapter.h"
 
 
-// Дефолтные значения
+// Default values
+
 const unsigned int windowWidth = 960;
 const unsigned int windowHeight = 672;
 

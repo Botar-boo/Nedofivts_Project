@@ -47,7 +47,7 @@ Sameer::Sameer(tImages& Texture, unsigned int waveNumber, userSprite& startBlock
     this->Armor *= (float)pow(armorMul, waveNumber);
 }
 
-//Обработка движения и анимации крипов
+// Preparing creep animation for update
 void Creep::Update(float deltaTime) {
     vectorF movement = { 0.0f, 0.0f };
 
@@ -123,7 +123,7 @@ void Creep::setReward(int Reward) {
     this->Reward = Reward;
 }
 
-//������� �� ����, ��������� � ���
+// Смерть и анимация смерти крипа
 void Creep::killCreep(std::vector <Creep>& Creeps, std::vector<std::pair<Creep, float>>& Dead, int creepNumber, float deltaTime) {
     auto it = Creeps.begin();
     for (int i = 0; i < creepNumber; ++i) {

@@ -1,24 +1,24 @@
 #include "Menu.h"
 
 
-const unsigned int menuButtons = 2; //���������� �������� ������ � ����
+const unsigned int menuButtons = 2;
 
-//������� ��������� ���� ���� � ������������ �������� ������������
+// Menu logic
+
 void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
-    // ���� � ���������
+    // Commented out piece of code is needed to switch to jpg files
     const std::vector <std::string> tButtonPath = {
             "images/Play.png",
             "images/Settings.png"};
     const std::string tBackgroundPath = "images/GrassGround.png";
     /*const std::vector <std::string> tButtonPath = {
-            "images/Play.png",
-            "images/Settings.png" };
-    const std::string tBackgroundPath = "images/GrassGround.png";*/
+            "images/Play.jpg",
+            "images/Settings.jpg" };
+    const std::string tBackgroundPath = "images/GrassGround.jpg";*/
 
-    //�������� �������
     std::vector <tImages> ButtonTextures(menuButtons);
     tImages tBackground;
-    //������ ��������� ������ ����
+    
     const std::vector <vectorF> ButtonPos = { { 384, 200 }, { 816, 528} };
 
     std::vector <userSprite> Buttons;
@@ -49,8 +49,8 @@ void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
                 (Pos.y < buttonCenter.y + Buttons[i].gGB().height / 2) &&
                 (Pos.x > buttonCenter.x - Buttons[i].gGB().width / 2) &&
                 (Pos.x < buttonCenter.x + Buttons[i].gGB().width / 2)) {
-                if (i == 0) gameStart = true; // ������ Play
-                if (i == 1) openSettings = true; // ������ Settings
+                if (i == 0) gameStart = true;  // В игру
+                if (i == 1) openSettings = true; // Вернуться в Settings
             }
         }
         if (openSettings) {
