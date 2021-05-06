@@ -8,41 +8,31 @@
 #include <iostream>
 #include <string>
 
-typedef struct vectorF {
-    float x;
-    float y;
-} vectorF;
 
-typedef struct vectorU {
-    int x;
-    int y;
-} vectorU;
-
-
-typedef struct IntRect {
+template<typename T>
+struct Vector {
 public:
-    int left;
-    int top;
-    int width;
-    int height;
-} IntRect;
+    T x;
+    T y;
+};
 
 
-
-typedef struct FloatRect {
+template<typename T>
+struct Rect { // Rect is used for rectangle objects. Don't confuse with user userRectangleShape
 public:
-    float left;
-    float top;
-    float width;
-    float height;
-} FloatRect;
+    T left;
+    T top;
+    T width;
+    T height;
+};
 
-class tImages : public sf::Texture {
+// these classes are used for cover over SFML
+class userImages : public sf::Texture {
 public:
-    tImages();
-    ~tImages() {};
+    userImages();
+    ~userImages() {};
     void loadTexture(const std::string& file);
-    vectorF getImageSize();
+    Vector<float>  getImageSize();
 };
 
 class userFont : public sf::Font {
@@ -80,24 +70,24 @@ public:
     float getRad();
 
     void setPos(float x, float y);
-    vectorF getPos();
+    Vector<float> getPos();
 
     void moveObj(float x, float y);
 
-    FloatRect gGB() const;
+    Rect<float> gGB() const;
 };
 
-class userRectangleShape : public sf::RectangleShape {
+class userRectangleShape : public sf::RectangleShape { // is used for controlling SFML rectangle shapes
 public:
     userRectangleShape();
     ~userRectangleShape() {};
     void setPos(float x, float y);
-    vectorF getPos();
-    void setTextureArea(IntRect uvRect);
+    Vector<float> getPos();
+    void setTextureArea(Rect<int> uvRect);
 
     void moveObj(float x, float y);
 
-    FloatRect gGB() const;
+    Rect<float> gGB() const;
 };
 
 class userText : public sf::Text {
@@ -106,15 +96,15 @@ public:
     ~userText() {};
 
     void setPos(float x, float y);
-    vectorF getPos();
+    Vector<float> getPos();
 };
 
 class userSprite : public sf::Sprite {
 public:
-    userSprite(const tImages& texture);
+    userSprite(const userImages& texture);
     ~userSprite() {};
-    FloatRect gGB() const;
-    vectorF getPos();
+    Rect<float> gGB() const;
+    Vector<float> getPos();
     void setPos(float x, float y);
 };
 
@@ -146,7 +136,7 @@ public:
     userMouse();
     ~userMouse() {};
     bool buttonPressed(char c);
-    vectorF getPos(userRenderWindow& window);
+    Vector<float> getPos(userRenderWindow& window);
 
 };
 

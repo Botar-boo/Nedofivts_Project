@@ -4,7 +4,7 @@
 
 class Creep : public Unit {
 public:
-    Creep(tImages& Texture, userSprite& startBlock, vectorU imageCount, float sizeX, float sizeY, float Health, float Speed);
+    Creep(userImages& Texture, userSprite& startBlock, Vector<int> imageCount, float sizeX, float sizeY, float Health, float Speed);
     ~Creep() {}
 
 public:
@@ -42,12 +42,12 @@ private:
 
 class Batyr : public Creep {
 public:
-    Batyr(tImages& Texture, unsigned int waveNumber, userSprite& startBlock);
+    Batyr(userImages& Texture, unsigned int waveNumber, userSprite& startBlock);
     ~Batyr() {}
 };
 
 class Sameer : public Creep {
 public:
-    Sameer(tImages& Texture, unsigned int waveNumber, userSprite& startBlock);
+    Sameer(userImages& Texture, unsigned int waveNumber, userSprite& startBlock);
     ~Sameer() {}
 };

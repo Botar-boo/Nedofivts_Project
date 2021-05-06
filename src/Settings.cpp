@@ -13,14 +13,14 @@ void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
             "images/Back.png" };
     const std::string tBackgroundPath = "images/GrassGround.png";*/
 
-    std::vector <tImages> ButtonTextures(tButtonPath.size());
-    tImages tBackground;
-    const std::vector <vectorF> ButtonPos = { { 234, 350 }, { 534, 350 }, { 48, 528} };
+    std::vector <userImages> ButtonTextures(tButtonPath.size());
+    userImages tBackground;
+    const std::vector <Vector<float>> ButtonPos = { { 234, 350 }, { 534, 350 }, { 48, 528} };
 
     std::vector <userSprite> Buttons;
     std::vector <userSprite> Background;
     bool goBack = false;
-    vectorU Pos = { 0, 0 };
+    Vector<int> Pos = { 0, 0 };
 
     loadAdditionalWindowTextures(Buttons, ButtonPos, tButtonPath, ButtonTextures, Background, tBackgroundPath, tBackground);
     srand(static_cast <unsigned int> (time(0)));
@@ -32,13 +32,13 @@ void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
                 Window.close();
                 exit(0);
             }
-        vectorF Pos = { 0.f, 0.f };
+        Vector<float> Pos = { 0.f, 0.f };
         userMouse mouse;
         if (mouse.buttonPressed('L')) {
             Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
         }
         for (unsigned int i = 0; i < Buttons.size(); i++) {
-            vectorF buttonCenter = { Buttons[i].gGB().left + Buttons[i].gGB().width / 2,
+            Vector<float> buttonCenter = { Buttons[i].gGB().left + Buttons[i].gGB().width / 2,
                                     Buttons[i].gGB().top + Buttons[i].gGB().height / 2 };
             if ((Pos.y > buttonCenter.y - Buttons[i].gGB().height / 2) &&
                 (Pos.y < buttonCenter.y + Buttons[i].gGB().height / 2) &&
@@ -68,7 +68,7 @@ void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& But
 
 // Loading textures
 
-void loadAdditionalWindowTextures(std::vector <userSprite>& Buttons, const std::vector <vectorF>& ButtonPosition, const std::vector <std::string>& tButtonPath, std::vector <tImages>& ButtonTextures, std::vector <userSprite>& Background, const std::string tBackgroundPath, tImages& tBackground) {
+void loadAdditionalWindowTextures(std::vector <userSprite>& Buttons, const std::vector <Vector<float>>& ButtonPosition, const std::vector <std::string>& tButtonPath, std::vector <userImages>& ButtonTextures, std::vector <userSprite>& Background, const std::string tBackgroundPath, userImages& tBackground) {
 
     tBackground.loadTexture(tBackgroundPath);
 

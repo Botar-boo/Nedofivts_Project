@@ -1,7 +1,7 @@
 #include "Tower.h"
 
 
-Tower::Tower(tImages& Texture, vectorF Pos, unsigned int Price) :
+Tower::Tower(userImages& Texture, Vector<float> Pos, unsigned int Price) :
     Unit(
         Texture,
         towerImageCount,
@@ -13,7 +13,7 @@ Tower::Tower(tImages& Texture, vectorF Pos, unsigned int Price) :
     this->Body.setPos(Pos.x, Pos.y);
 }
 
-SingleTower::SingleTower(tImages& Texture, vectorF pos) :
+SingleTower::SingleTower(userImages& Texture, Vector<float> pos) :
     Tower(
         Texture,
         pos,
@@ -21,7 +21,7 @@ SingleTower::SingleTower(tImages& Texture, vectorF pos) :
     ) {
 }
 
-MultiTower::MultiTower(tImages& Texture, vectorF pos) :
+MultiTower::MultiTower(userImages& Texture, Vector<float> pos) :
     Tower(
         Texture,
         pos,
@@ -31,7 +31,7 @@ MultiTower::MultiTower(tImages& Texture, vectorF pos) :
     this->setReload(-0.5);
 }
 
-FreezingTower::FreezingTower(tImages& Texture, vectorF pos) :
+FreezingTower::FreezingTower(userImages& Texture, Vector<float> pos) :
     Tower(
         Texture,
         pos,
@@ -39,7 +39,7 @@ FreezingTower::FreezingTower(tImages& Texture, vectorF pos) :
     ) {
 }
 
-OnePunchTower::OnePunchTower(tImages& Texture, vectorF pos) :
+OnePunchTower::OnePunchTower(userImages& Texture, Vector<float> pos) :
     Tower(
         Texture,
         pos,

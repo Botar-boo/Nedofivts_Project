@@ -50,30 +50,30 @@ const float armorMul = 1.04f;
 const float towerReloadTime = 1.0f;
 
 const unsigned int defaultBallSpeed = 300;
-const vectorU mapSize = { 14, 20 };
-const vectorU creepImageCount = { 3, 2 };
-const vectorU towerImageCount = { 3, 1 };
-const vectorF towerSize = { 48, 72 };
-const vectorF gameOverPosition = { 220, 70 };
-const vectorF moneyPosition = { 820, 630 };
-const vectorF healthPosition = { 380, 620 };
-const vectorF wavePosition = { 5, 630 };
-const vectorF originPosition = { 100, 100 };
-const vectorF blockSize = { 48.0f, 48.0f };
+const Vector<int> mapSize = { 14, 20 };
+const Vector<int> creepImageCount = { 3, 2 };
+const Vector<int> towerImageCount = { 3, 1 };
+const Vector<float> towerSize = { 48, 72 };
+const Vector<float> gameOverPosition = { 220, 70 };
+const Vector<float> moneyPosition = { 820, 630 };
+const Vector<float> healthPosition = { 380, 620 };
+const Vector<float> wavePosition = { 5, 630 };
+const Vector<float> originPosition = { 100, 100 };
+const Vector<float> blockSize = { 48.0f, 48.0f };
 
 
 
 class Animation {
 public:
-    Animation(tImages* texture, vectorU imageCount, float switchTime);
+    Animation(userImages* texture, Vector<int> imageCount, float switchTime);
     ~Animation() {};
     void Update(int row, float deltaTime, bool FaceRight);
 public:
-    IntRect uvRect;
+    Rect<int> uvRect; // stands UV mapping
     float totalTime;
-    vectorU currImage = { 0, 0 };
+    Vector<int> currImage = { 0, 0 };
 private:
-    vectorU imageCount;
+    Vector<int> imageCount;
 
     float switchTime;
 };

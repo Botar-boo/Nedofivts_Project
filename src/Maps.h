@@ -3,7 +3,7 @@
 
 void drawMap(userRenderWindow& Window, MAP& Map);
 
-void constructMap(MAP& Map, std::vector <std::vector<int>>& pseudoMap, std::vector <tImages>& Textures);
+void constructMap(MAP& Map, std::vector <std::vector<int>>& pseudoMap, std::vector <userImages>& Textures);
 
 void fillMap1(std::vector <std::vector <int>>& Map);
 

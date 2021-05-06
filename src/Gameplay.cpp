@@ -36,16 +36,16 @@ void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>&
         Creeps[i].Update(deltaTime);
         for (unsigned int j = 0; j < Creeps[i].ballsFollow.size(); ++j) {
             Creeps[i].ballsFollow[j].Update(Creeps[i].getBody().getPos().x + Creeps[i].getBody().gGB().width / 2, Creeps[i].getBody().getPos().y + Creeps[i].getBody().gGB().height / 2, deltaTime);
-            vectorF ballPos = { Creeps[i].ballsFollow[j].getBody().getPos().x + Creeps[i].ballsFollow[j].getBody().gGB().width / 2, Creeps[i].ballsFollow[j].getBody().getPos().y + Creeps[i].ballsFollow[j].getBody().gGB().height / 2 };
-            vectorF creepPos = { Creeps[i].getBody().getPos().x + Creeps[i].getBody().gGB().width / 2, Creeps[i].getBody().getPos().y + Creeps[i].getBody().gGB().height / 2 };
+            Vector<float> ballPos = { Creeps[i].ballsFollow[j].getBody().getPos().x + Creeps[i].ballsFollow[j].getBody().gGB().width / 2, Creeps[i].ballsFollow[j].getBody().getPos().y + Creeps[i].ballsFollow[j].getBody().gGB().height / 2 };
+            Vector<float> creepPos = { Creeps[i].getBody().getPos().x + Creeps[i].getBody().gGB().width / 2, Creeps[i].getBody().getPos().y + Creeps[i].getBody().gGB().height / 2 };
             if (epsCirclePos(ballPos, creepPos)) {
                 Creeps[i].getDamage(Creeps[i].ballsFollow[j]); //Creeps[i].setHealth(-Creeps[i].ballsFollow[j].getDamage()); 
                 Creeps[i].ballsFollow.erase(Creeps[i].ballsFollow.begin() + j);
                 --j;
             }
         }
-        vectorF creepPos = { Creeps[i].getBody().getPos().x + (Creeps[i].getBody().gGB().width / 2), Creeps[i].getBody().getPos().y + (Creeps[i].getBody().gGB().height / 2) };
-        vectorF endPos = { Map.Road[Map.endNumb].first.getPos().x + blockSize.x, Map.Road[Map.endNumb].first.getPos().y + blockSize.y / 2 };
+        Vector<float> creepPos = { Creeps[i].getBody().getPos().x + (Creeps[i].getBody().gGB().width / 2), Creeps[i].getBody().getPos().y + (Creeps[i].getBody().gGB().height / 2) };
+        Vector<float> endPos = { Map.Road[Map.endNumb].first.getPos().x + blockSize.x, Map.Road[Map.endNumb].first.getPos().y + blockSize.y / 2 };
         if (epsCirclePos(creepPos, endPos)) {
             Creeps[i].Arrived();
             Creeps[i].setHealth(-Creeps[i].getHealth());
@@ -100,8 +100,8 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
 
     // Initialization of textures, music and font
 
-    tImages tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround;
-    std::vector <tImages> Textures = {tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround};
+    userImages tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround;
+    std::vector <userImages> Textures = {tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround};
 
     const std::vector <std::string> texturePath = {"images/Sameer2.0.png",
                                              "images/Batyr2.0.png",
@@ -147,7 +147,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             float releaseTime = 0.5f;
             float waitingTime = 10;
             int cnt;
-            if (currentGame->get_Hard()) cnt = 2 * currentGame->get_waveNumber() + 1;
+            if (currentGame->get_difficulty()) cnt = 2 * currentGame->get_waveNumber() + 1;
             else cnt = currentGame->get_waveNumber();
             Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
 

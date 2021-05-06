@@ -2,7 +2,7 @@
 #include "Creep.h"
 
 
-Creep::Creep(tImages& Texture, userSprite& startBlock, vectorU imageCount, float sizeX, float sizeY, float Health, float Speed) :
+Creep::Creep(userImages& Texture, userSprite& startBlock, Vector<int> imageCount, float sizeX, float sizeY, float Health, float Speed) :
     Unit(
         Texture,
         imageCount,
@@ -17,7 +17,7 @@ Creep::Creep(tImages& Texture, userSprite& startBlock, vectorU imageCount, float
 
 
 
-Batyr::Batyr(tImages& Texture, unsigned int waveNumber, userSprite& startBlock) :
+Batyr::Batyr(userImages& Texture, unsigned int waveNumber, userSprite& startBlock) :
     Creep(
         Texture,
         startBlock,
@@ -32,7 +32,7 @@ Batyr::Batyr(tImages& Texture, unsigned int waveNumber, userSprite& startBlock) 
     this->Evasion *= (float)pow(evasionMul, waveNumber);
 }
 
-Sameer::Sameer(tImages& Texture, unsigned int waveNumber, userSprite& startBlock) :
+Sameer::Sameer(userImages& Texture, unsigned int waveNumber, userSprite& startBlock) :
     Creep(
         Texture,
         startBlock,
@@ -49,7 +49,7 @@ Sameer::Sameer(tImages& Texture, unsigned int waveNumber, userSprite& startBlock
 
 // Preparing creep animation for update
 void Creep::Update(float deltaTime) {
-    vectorF movement = { 0.0f, 0.0f };
+    Vector<float> movement = { 0.0f, 0.0f };
 
     if (Row == 0) {
         if (this->Dir == 0) {

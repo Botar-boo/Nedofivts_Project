@@ -19,11 +19,11 @@ typedef struct GameSettings {
 
 class Ball {
 public:
-    Ball(vectorF towerPos, int n);
+    Ball(Vector<float> towerPos, int n);
     ~Ball() {};
 public:
     userCircleShape getBody();
-    vectorF getPosition();
+    Vector<float> getPosition();
 
     float getDamage();
     void setDamage(float Damage);
@@ -47,19 +47,19 @@ private:
 
 class FireBall : public Ball {
 public:
-    FireBall(vectorF towerPos);
+    FireBall(Vector<float> towerPos);
     ~FireBall() {}
 };
 
 class SnowBall : public Ball {
 public:
-    SnowBall(vectorF towerPos);
+    SnowBall(Vector<float> towerPos);
     ~SnowBall() {}
 
 };
 
 class DesolBall : public Ball {
 public:
-    DesolBall(vectorF TowerPos);
+    DesolBall(Vector<float> TowerPos);
     ~DesolBall() {};
 };
