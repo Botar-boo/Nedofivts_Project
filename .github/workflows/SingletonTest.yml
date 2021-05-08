@@ -25,3 +25,6 @@ jobs:
           cmake ..
           make
           ./Test
+      - name: "Build main project"
+        run : |
+          ls
