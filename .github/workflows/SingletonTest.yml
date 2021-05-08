@@ -27,6 +27,7 @@ jobs:
           ./Test
       - name: "Build main project"
         run : |
+          sudo apt-get install libsfml-dev
           chmod +x run.sh
           ./run.sh
           
