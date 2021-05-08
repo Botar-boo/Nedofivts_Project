@@ -16,10 +16,10 @@ add_subdirectory(src)
 
 include_directories(src)
 
-target_link_libraries(${PROJECT_NAME} "lsfml-graphics"
-                    "lsfml-audio"
-                    "lsfml-window"
-                    "lsfml-network"
-                    "lsfml-system"
+target_link_libraries(${PROJECT_NAME} "sfml-graphics"
+                    "sfml-audio"
+                    "sfml-window"
+                    "sfml-network"
+                    "sfml-system"
                     ${SOURCE_LIB}
 )
