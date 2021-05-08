@@ -87,7 +87,7 @@ userRenderWindow::userRenderWindow(unsigned int modeWidth, unsigned int modeHeig
     sf::RenderWindow(
         sf::VideoMode(modeWidth, modeHeight),
         title,
-        sf::Style::Close | sf::Style::Resize) {}
+        sf::Style::Close) {}
 userRectangleShape::userRectangleShape() : sf::RectangleShape() {}
 
 Vector<float> userRectangleShape::getPos() {
