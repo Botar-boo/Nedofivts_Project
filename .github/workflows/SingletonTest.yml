@@ -1,4 +1,4 @@
-name: SingletonTest
+name: BuildTest
 
 on:
   push:
