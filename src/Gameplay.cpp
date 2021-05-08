@@ -1,6 +1,4 @@
-#pragma once
 #include "Gameplay.h"
-
 
 // Logic proccesing
 

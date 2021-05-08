@@ -10,7 +10,7 @@ public:
 
 public:
     unsigned int Row;
-    Animation Animation;
+    Animation animation;
     bool faceRight;
 protected:
     userRectangleShape Body;

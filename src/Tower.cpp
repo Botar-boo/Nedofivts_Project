@@ -49,8 +49,8 @@ OnePunchTower::OnePunchTower(userImages& Texture, Vector<float> pos) :
 
 // Preparing tower animation for update
 void Tower::Update(float deltaTime) {
-    Animation.Update(0, deltaTime, faceRight);
-    Body.setTextureArea(Animation.uvRect);
+    animation.Update(0, deltaTime, faceRight);
+    Body.setTextureArea(animation.uvRect);
 }
 
 int Tower::getPrice() {

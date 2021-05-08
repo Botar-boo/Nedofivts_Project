@@ -1,4 +1,3 @@
-#pragma once
 #include "Creep.h"
 
 
@@ -83,8 +82,8 @@ void Creep::Update(float deltaTime) {
         }
     }
 
-    Animation.Update(Row, deltaTime, faceRight);
-    Body.setTextureArea(Animation.uvRect);
+    animation.Update(Row, deltaTime, faceRight);
+    Body.setTextureArea(animation.uvRect);
     Body.moveObj(movement.x, movement.y);
 }
 
@@ -144,8 +143,8 @@ void Creep::killCreep(std::vector <Creep>& Creeps, std::vector<std::pair<Creep, 
     for (int i = 0; i < creepNumber; ++i) {
         it++;
     }
-    it->Animation.totalTime = 0;
-    it->Animation.currImage.x = 0;
+    it->animation.totalTime = 0;
+    it->animation.currImage.x = 0;
     Row = 1;
     Dead.push_back({ *it, deadTime });
     Creeps.erase(it);
