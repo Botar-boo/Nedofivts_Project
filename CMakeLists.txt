@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(SOURCE_LIB src_lib)
 
 set(SFML_DIR "${PROJECT_SOURCE_DIR}/SFML/lib")
-
+find_package(SFML 2.5 COMPONENTS graphics audio window network system)
 
 include_directories("${PROJECT_SOURCE_DIR}/SFML/include")
 
