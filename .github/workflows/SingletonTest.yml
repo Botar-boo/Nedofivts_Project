@@ -19,8 +19,9 @@ jobs:
           make
           sudo make install
           cd ../../
-          mkdir build
-          cd build
+          cd tests
+          mkdir buildTest
+          cd buildTest
           cmake ..
           make
           ./Test
