@@ -27,4 +27,7 @@ jobs:
           ./Test
       - name: "Build main project"
         run : |
-          ls
+          mkdir build
+          cd build
+          cmake ..
+          make
