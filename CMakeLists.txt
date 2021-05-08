@@ -7,7 +7,6 @@ set(SOURCE_LIB src_lib)
 
 set(SFML_DIR "${PROJECT_SOURCE_DIR}/SFML/lib")
 
-set(SFML_SHARED_LIBRARIES TRUE)
 
 include_directories("${PROJECT_SOURCE_DIR}/SFML/include")
 
@@ -17,10 +16,10 @@ add_subdirectory(src)
 
 include_directories(src)
 
-target_link_libraries(${PROJECT_NAME} "-lsfml-graphics-s"
-                    "-lsfml-audio-s"
-                    "-lsfml-window-s"
-                    "-lsfml-network-s"
-                    "-lsfml-system-s"
+target_link_libraries(${PROJECT_NAME} "-lsfml-graphics"
+                    "-lsfml-audio"
+                    "-lsfml-window"
+                    "-lsfml-network"
+                    "-lsfml-system"
                     ${SOURCE_LIB}
 )
