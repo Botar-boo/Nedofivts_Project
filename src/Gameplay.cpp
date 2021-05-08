@@ -101,9 +101,9 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
     // Initialization of textures, music and font
 
     userImages tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround;
-    std::vector <userImages> Textures = {tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround};
+    std::vector <userImages> Textures = { tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround };
 
-    const std::vector <std::string> texturePath = {"images/Sameer2.0.png",
+    const std::vector <std::string> texturePath = { "images/Sameer2.0.png",
                                              "images/Batyr2.0.png",
                                              "images/SingleTower.png",
                                              "images/MultiTower.png",
@@ -116,7 +116,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                                              "images/URGround.png",
                                              "images/DRGround.png",
                                              "images/DLGround.png",
-                                             "images/ULGround.png"};
+                                             "images/ULGround.png" };
 
     loadTexture(Textures, texturePath);
     userFont Font;

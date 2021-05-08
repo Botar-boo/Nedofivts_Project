@@ -9,7 +9,7 @@ void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
     // Commented out piece of code is needed to switch to jpg files
     const std::vector <std::string> tButtonPath = {
             "images/Play.png",
-            "images/Settings.png"};
+            "images/Settings.png" };
     const std::string tBackgroundPath = "images/GrassGround.png";
     /*const std::vector <std::string> tButtonPath = {
             "images/Play.jpg",
@@ -18,7 +18,7 @@ void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
 
     std::vector <userImages> ButtonTextures(menuButtons);
     userImages tBackground;
-    
+
     const std::vector <Vector<float>> ButtonPos = { { 384, 200 }, { 816, 528} };
 
     std::vector <userSprite> Buttons;

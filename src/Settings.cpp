@@ -5,7 +5,7 @@ void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
     const std::vector <std::string> tButtonPath = {
             "images/Eazy.png",
             "images/Hard.png",
-            "images/Back.png"};
+            "images/Back.png" };
     const std::string tBackgroundPath = "images/GrassGround.png";
     /*const std::vector <std::string> tButtonPath = {
             "images/Eazy.png",
