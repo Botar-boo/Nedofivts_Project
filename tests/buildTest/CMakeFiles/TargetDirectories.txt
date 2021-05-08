@@ -1,0 +1,3 @@
+/Users/sameertantry/Desktop/patterns/rep/Nedofivts_Project/tests/buildTest/CMakeFiles/rebuild_cache.dir
+/Users/sameertantry/Desktop/patterns/rep/Nedofivts_Project/tests/buildTest/CMakeFiles/edit_cache.dir
+/Users/sameertantry/Desktop/patterns/rep/Nedofivts_Project/tests/buildTest/CMakeFiles/Test.dir
