@@ -1,4 +1,3 @@
-#pragma once
 #include "Additional.h"
 
 userImages tFireball, tSnowball, tDesolball;
