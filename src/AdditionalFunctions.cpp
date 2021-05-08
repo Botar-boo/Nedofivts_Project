@@ -18,14 +18,16 @@ Vector <float> findCentre(Rect<float> rect) {
 
 // Creating creep wave at the begining of the round
 
-void fillCreep(Game* currentGame, std::vector<Creep>& Creeps, MAP& Map, float& releaseTime, float deltaTime, int& cnt, userImages& tSameer, userImages& tBatyr) {
+void fillCreep(Game* currentGame, std::vector<Creep>& Creeps, MAP& Map, float& releaseTime, float deltaTime, int& cnt, userImages& tSameer, userImages& tBatyr, userImages& tJegor) {
     releaseTime -= deltaTime;
     if (releaseTime <= 0 && cnt != 0) {
         releaseTime = deadTime;
-        if (cnt % 2 == 1)
-            Creeps.push_back(Batyr(tBatyr, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
-        else
-            Creeps.push_back(Sameer(tSameer, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
+        if (cnt % 3 == 0) 
+            Creeps.push_back(Jegor(tJegor, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
+        else if (cnt % 3 == 1)
+                Creeps.push_back(Batyr(tBatyr, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
+            else
+                Creeps.push_back(Sameer(tSameer, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
         cnt--;
     }
 }
@@ -80,6 +82,16 @@ void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, s
 
 
 // Check keypress
+void checkSpeed(int& gameSpeed, float deltaTime) {
+    userKeyboard kBoard;
+    static float curTime = 0;
+    curTime += deltaTime;
+    if (kBoard.checkButtonPressed('A') && curTime >= 0.2) {
+        gameSpeed = 3 - gameSpeed;
+        curTime = 0;
+    }
+}
+
 void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*>& Towers, std::vector<std::pair<userSprite, bool>>& Grass, int& buttonCheck, std::vector <userImages>& Textures) {
     userKeyboard kBoard;
     if (kBoard.checkButtonPressed('Q')) {
@@ -276,13 +288,16 @@ void towerClear(std::vector <Tower*>& Towers) {
 
 // Additioanl windows rendering
 
-void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& Buttons, std::vector<userSprite>& Background) {
+void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& Buttons, std::vector<userSprite>& Background, std::vector<userSprite>& AddObjects) {
     Window.userClear();
     for (auto& Tile : Background) {
         Window.userDraw(Tile);
     }
     for (auto& Button : Buttons) {
         Window.userDraw(Button);
+    }
+    for (auto& Obj : AddObjects) {
+        Window.userDraw(Obj);
     }
     Window.userDisplay();
 }
@@ -310,26 +325,9 @@ void loadAdditionalWindowTextures(std::vector <userSprite>& Buttons, const std::
 }
 
 // Loading textures
-// Commented piece of code is needed to load .jpg files
 
 void loadTexture(std::vector <userImages>& Textures, const std::vector <std::string>& texturePath) {
     for (unsigned int i = 0; i < Textures.size(); ++i) {
         Textures[i].loadTexture(texturePath[i]);
     }
-    /*
-   tSameer.loadTexture("images/Sameer2.0.png");
-   tBatyr.loadTexture("images/Batyr2.0.png");
-   tSingle.loadTexture("images/SingleTower.png");
-   tMulti.loadTexture("images/MultiTower.png");
-   tFreezing.loadTexture("images/FreezingTower.png");
-   tOnePunch.loadTexture("images/OnePunchMan.png");
-   tGameOver.loadTexture("images/GameOver.png");
-   tGrass.loadTexture("images/GrassGround.png");
-   tHGround.loadTexture("images/HGround.png");
-   tVGround.loadTexture("images/VGround.png");
-   tURGround.loadTexture("images/URGround.png");
-   tDRGround.loadTexture("images/DRGround.png");
-   tDLGround.loadTexture("images/DLGround.png");
-   tULGround.loadTexture("images/ULGround.png");*/
-
 }

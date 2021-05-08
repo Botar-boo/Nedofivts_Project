@@ -16,14 +16,19 @@ const unsigned int defaultRadius = 10;
 
 const unsigned int samSpeed = 100;
 const unsigned int batSpeed = 140;
+const unsigned int jgrSpeed = 60;
 const unsigned int samHealth = 8;
 const unsigned int batHealth = 4;
+const unsigned int jgrHealth = 12;
 const unsigned int samSizeX = 48;
 const unsigned int samSizeY = 48;
 const unsigned int batSizeX = 32;
 const unsigned int batSizeY = 32;
+const unsigned int jgrSizeX = 64;
+const unsigned int jgrSizeY = 64;
 const unsigned int samReward = 10;
 const unsigned int batReward = 5;
+const unsigned int jgrReward = 10;
 const unsigned int minSpeed = 50;
 const unsigned int fireBallDamage = 2;
 const unsigned int snowBallDamage = 1;
@@ -34,7 +39,7 @@ const unsigned int freezingTowerPrice = 30;
 const unsigned int onePunchTowerPrice = 40;
 const unsigned int multiTowerShotCount = 3;
 const unsigned int towerRadius = 100;
-const unsigned int winWaveGold = 5;
+const unsigned int winWaveGold = 20;
 const unsigned int fontSize1 = 30;
 const unsigned int fontSize2 = 40;
 const float slowSnowBall = 0.3f;
@@ -43,8 +48,10 @@ const float deadTime = 0.9f;
 const float animationTime = 0.3f;
 const float batEvasion = 0.1f;
 const float samEvasion = 0.01f;
+const float jgrEvasion = 0.0f;
 const float batArmor = 0.25f;
 const float samArmor = 0.4f;
+const float jgrArmor = 0.45f;
 const float evasionMul = 1.03f;
 const float armorMul = 1.04f;
 const float towerReloadTime = 1.0f;
@@ -69,7 +76,7 @@ public:
     ~Animation() {};
     void Update(int row, float deltaTime, bool FaceRight);
 public:
-    Rect<int> uvRect; // stands UV mapping
+    Rect<int> uvRect; // stands for UV mapping
     float totalTime;
     Vector<int> currImage = { 0, 0 };
 private:

@@ -51,3 +51,9 @@ public:
     Sameer(userImages& Texture, unsigned int waveNumber, userSprite& startBlock);
     ~Sameer() {}
 };
+
+class Jegor : public Creep {
+public:
+    Jegor(userImages& Texture, unsigned int waveNumber, userSprite& startBlock);
+    ~Jegor() {}
+};

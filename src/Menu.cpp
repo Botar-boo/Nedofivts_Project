@@ -21,6 +21,7 @@ void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
 
     const std::vector <Vector<float>> ButtonPos = { { 384, 200 }, { 816, 528} };
 
+    std::vector <userSprite> AddObjects;
     std::vector <userSprite> Buttons;
     std::vector <userSprite> Background;
     bool openSettings = false;
@@ -57,6 +58,6 @@ void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
             Settings(Window, gameSettings);
             openSettings = false;
         }
-        AdditionalWindowDraw(Window, Buttons, Background);
+        AdditionalWindowDraw(Window, Buttons, Background, AddObjects);
     }
 }

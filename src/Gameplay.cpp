@@ -86,7 +86,6 @@ void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>&
     }
 }
 
-
 // Starting the gameplay and creating general objects
 
 void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSettings& gameSettings) {
@@ -94,29 +93,31 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
 
     Game* currentGame = Game::get_instance();
     currentGame->startGame(gameSettings.Hard);
+    int gameSpeed = 1;
     std::vector <std::pair<Creep, float>> Dead;
     std::vector <Tower*> Towers;
     std::vector <Creep> Creeps;
 
     // Initialization of textures, music and font
 
-    userImages tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround;
-    std::vector <userImages> Textures = { tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround };
+    userImages tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround, tJegor;
+    std::vector <userImages> Textures = { tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround, tJegor};
 
     const std::vector <std::string> texturePath = { "images/Sameer2.0.png",
-                                             "images/Batyr2.0.png",
-                                             "images/SingleTower.png",
-                                             "images/MultiTower.png",
-                                             "images/FreezingTower.png",
-                                             "images/OnePunchMan.png",
-                                             "images/GameOver.png",
-                                             "images/GrassGround.png",
-                                             "images/HGround.png",
-                                             "images/VGround.png",
-                                             "images/URGround.png",
-                                             "images/DRGround.png",
-                                             "images/DLGround.png",
-                                             "images/ULGround.png" };
+                                                    "images/Batyr2.0.png",
+                                                    "images/SingleTower.png",
+                                                    "images/MultiTower.png",
+                                                    "images/FreezingTower.png",
+                                                    "images/OnePunchMan.png",
+                                                    "images/GameOver.png",
+                                                    "images/GrassGround.png",
+                                                    "images/HGround.png",
+                                                    "images/VGround.png",
+                                                    "images/URGround.png",
+                                                    "images/DRGround.png",
+                                                    "images/DLGround.png",
+                                                    "images/ULGround.png",
+                                                    "images/Jegor.png" };
 
     loadTexture(Textures, texturePath);
     userFont Font;
@@ -127,9 +128,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
     userColor Blue = userColor(0, 0, 255, 25);
 
     MAP Map;
-    std::vector <std::vector <int>> pseudoMap(mapSize.x, std::vector <int>(mapSize.y));
-    fillMap1(pseudoMap);
-    constructMap(Map, pseudoMap, Textures);
+    createMap(Map, gameSettings, Textures);
 
     userSprite sGameOver(Textures[6]);
     sGameOver.setPos(gameOverPosition.x, gameOverPosition.y);
@@ -153,7 +152,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
 
             while (waitingTime > 0) {
 
-                deltaTime = Clock.restart().asSeconds();
+                deltaTime = gameSpeed * Clock.restart().asSeconds();
                 waitingTime -= deltaTime;
                 userEvent e;
                 while (Window.pollEvent(e))
@@ -163,6 +162,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                         exit(0);
                     }
                 checkPress(currentGame, Window, Towers, Map.Grass, buttonCheck, Textures);
+                checkSpeed(gameSpeed, deltaTime);
 
                 for (unsigned int i = 0; i < Towers.size(); i++) {
                     Towers[i]->Update(deltaTime);
@@ -182,8 +182,9 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                         towerClear(Towers);
                         exit(0);
                     }
-                deltaTime = Clock.restart().asSeconds();
-                if (cnt != 0) fillCreep(currentGame, Creeps, Map, releaseTime, deltaTime, cnt, Textures[0], Textures[1]);
+                checkSpeed(gameSpeed, deltaTime);
+                deltaTime = gameSpeed * Clock.restart().asSeconds();
+                if (cnt != 0) fillCreep(currentGame, Creeps, Map, releaseTime, deltaTime, cnt, Textures[0], Textures[1], Textures[14]);
                 Logic(currentGame, Towers, Creeps, Dead, deltaTime, Map);
                 if (currentGame->get_playerHealth() <= 0) {
                     currentGame->switch_gameOver();

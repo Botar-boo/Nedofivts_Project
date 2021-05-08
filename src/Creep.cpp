@@ -47,6 +47,21 @@ Sameer::Sameer(userImages& Texture, unsigned int waveNumber, userSprite& startBl
     this->Armor *= (float)pow(armorMul, waveNumber);
 }
 
+Jegor::Jegor(userImages& Texture, unsigned int waveNumber, userSprite& startBlock) :
+    Creep(
+        Texture,
+        startBlock,
+        creepImageCount,
+        jgrSizeX,
+        jgrSizeY,
+        jgrHealth,
+        jgrSpeed) {
+    this->setReward(jgrReward);
+    this->Armor = jgrArmor;
+    this->Evasion = jgrEvasion;
+    this->Armor *= (float)pow(armorMul, waveNumber);
+}
+
 // Preparing creep animation for update
 void Creep::Update(float deltaTime) {
     Vector<float> movement = { 0.0f, 0.0f };
