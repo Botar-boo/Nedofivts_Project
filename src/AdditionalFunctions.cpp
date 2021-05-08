@@ -249,6 +249,41 @@ void towerClear(std::vector <Tower*>& Towers) {
     }
 }
 
+// Additioanl windows rendering
+ 
+void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& Buttons, std::vector<userSprite>& Background) {
+    Window.userClear();
+    for (auto& Tile : Background) {
+        Window.userDraw(Tile);
+    }
+    for (auto& Button : Buttons) {
+        Window.userDraw(Button);
+    }
+    Window.userDisplay();
+}
+
+// Loading textures
+
+void loadAdditionalWindowTextures(std::vector <userSprite>& Buttons, const std::vector <Vector<float>>& ButtonPosition, const std::vector <std::string>& tButtonPath, std::vector <userImages>& ButtonTextures, std::vector <userSprite>& Background, const std::string tBackgroundPath, userImages& tBackground) {
+
+    tBackground.loadTexture(tBackgroundPath);
+
+    for (unsigned int i = 0; i < ButtonTextures.size(); ++i) {
+        ButtonTextures[i].loadTexture(tButtonPath[i]);
+        userSprite Button(ButtonTextures[i]);
+        Button.setPos(ButtonPosition[i].x, ButtonPosition[i].y);
+        Buttons.push_back(Button);
+    }
+
+    for (unsigned int i = 0; i < static_cast<unsigned int>(windowWidth / blockSizeX); ++i) {
+        for (unsigned int j = 0; j < static_cast<unsigned int>(windowHeight / blockSizeY); ++j) {
+            userSprite Ground(tBackground);
+            Ground.setPosition(blockSizeX * i, blockSizeY * j);
+            Background.push_back(Ground);
+        }
+    }
+}
+
 // Loading textures
 // Commented piece of code is needed to load .jpg files
 
