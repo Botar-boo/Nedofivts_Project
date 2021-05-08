@@ -27,6 +27,7 @@ jobs:
           ./Test
       - name: "Build main project"
         run : |
+          sudo apt-get install libsfml-dev
           mkdir build
           cd build
           cmake ..
