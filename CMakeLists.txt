@@ -16,7 +16,7 @@ add_subdirectory(src)
 
 include_directories(src)
 
-target_link_libraries(${PROJECT_NAME} "-lsfml-graphics"
+target_link_libraries(${PROJECT_NAME} SHARED "-lsfml-graphics"
                     "-lsfml-audio"
                     "-lsfml-window"
                     "-lsfml-network"
