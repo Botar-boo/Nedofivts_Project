@@ -19,6 +19,7 @@ public:
     unsigned int get_playerGold();
     unsigned int get_waveNumber();
     void switch_gameOver();
+    void set_gameOver();
     void decr_playerHealth();
     void set_playerGold(int Gold);
     void incr_waveNumber();

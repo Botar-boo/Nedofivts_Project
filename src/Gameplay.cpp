@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Gameplay.h"
 
 
@@ -94,6 +94,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
     Game* currentGame = Game::get_instance();
     currentGame->startGame(gameSettings.Hard);
     int gameSpeed = 1;
+    bool gameStop = false;
     std::vector <std::pair<Creep, float>> Dead;
     std::vector <Tower*> Towers;
     std::vector <Creep> Creeps;
@@ -151,7 +152,12 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
 
             while (waitingTime > 0) {
-
+                if (gameStop) {
+                    deltaTime = gameSpeed * Clock.restart().asSeconds();
+                    checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
+                    continue;
+                }
+                if (currentGame->get_gameOver()) break;
                 deltaTime = gameSpeed * Clock.restart().asSeconds();
                 waitingTime -= deltaTime;
                 userEvent e;
@@ -162,7 +168,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                         exit(0);
                     }
                 checkPress(currentGame, Window, Towers, Map.Grass, buttonCheck, Textures);
-                checkSpeed(gameSpeed, deltaTime);
+                checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
 
                 for (unsigned int i = 0; i < Towers.size(); i++) {
                     Towers[i]->Update(deltaTime);
@@ -174,6 +180,11 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             buttonCheck = -1;
 
             while (!Creeps.empty() || !Dead.empty() || cnt != 0) {
+                if (gameStop) {
+                    deltaTime = gameSpeed * Clock.restart().asSeconds();
+                    checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
+                    continue;
+                }
                 userEvent e;
 
                 while (Window.pollEvent(e))
@@ -182,10 +193,11 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                         towerClear(Towers);
                         exit(0);
                     }
-                checkSpeed(gameSpeed, deltaTime);
+                checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
                 deltaTime = gameSpeed * Clock.restart().asSeconds();
                 if (cnt != 0) fillCreep(currentGame, Creeps, Map, releaseTime, deltaTime, cnt, Textures[0], Textures[1], Textures[14]);
                 Logic(currentGame, Towers, Creeps, Dead, deltaTime, Map);
+                if (currentGame->get_gameOver()) break;
                 if (currentGame->get_playerHealth() <= 0) {
                     currentGame->switch_gameOver();
                     break;
@@ -208,6 +220,13 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             currentGame->incr_waveNumber();
         }
         while (currentGame->get_gameOver()) {
+            deltaTime = gameSpeed * Clock.restart().asSeconds();
+            static float gameOverTime = 0;
+            gameOverTime += deltaTime;
+            if (gameOverTime > 5) {
+                gameOverTime = 0;
+                break;
+            }
             userEvent e;
             while (Window.pollEvent(e))
                 if (e.type == userEvent::Closed) {

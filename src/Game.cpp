@@ -7,7 +7,7 @@ Game::Game() {}
 
 void Game::startGame(bool Diff) {
     this->gameOver = false;
-    this->playerHealth = 10;
+    this->playerHealth = 1;
     this->playerGold = 40;
     this->waveNumber = 0;
     this->isHard = Diff;
@@ -30,6 +30,9 @@ unsigned int Game::get_waveNumber() {
 }
 void Game::switch_gameOver() {
     gameOver = 1 - gameOver; //1 - 1 = 0; 1 - 0 = 1
+}
+void Game::set_gameOver() {
+    gameOver = 1; //1 - 1 = 0; 1 - 0 = 1
 }
 void Game::decr_playerHealth() {
     playerHealth--;

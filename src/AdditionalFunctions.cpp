@@ -1,4 +1,4 @@
-﻿#include "AdditionalFunctions.h"
+#include "AdditionalFunctions.h"
 
 const float Eps = 5;
 
@@ -82,13 +82,21 @@ void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, s
 
 
 // Check keypress
-void checkSpeed(int& gameSpeed, float deltaTime) {
+void checkSpeed(int& gameSpeed, bool& gameStop, Game* game, float deltaTime) {
     userKeyboard kBoard;
-    static float curTime = 0;
-    curTime += deltaTime;
-    if (kBoard.checkButtonPressed('A') && curTime >= 0.2) {
+    static float speedTime = 0, stopTime = 0;
+    speedTime += deltaTime;
+    stopTime += deltaTime;
+    if (kBoard.checkButtonPressed('A') && speedTime >= 0.2) {
         gameSpeed = 3 - gameSpeed;
-        curTime = 0;
+        speedTime = 0;
+    }
+    if (kBoard.checkButtonPressed('B') && stopTime >= 0.2) {
+        gameStop = !gameStop;
+        stopTime = 0;
+    }
+    if (kBoard.checkButtonPressed('D')) {
+        game->set_gameOver();
     }
 }
 

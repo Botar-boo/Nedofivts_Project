@@ -8,7 +8,7 @@ bool epsCirclePos(Vector<float> Pos1, Vector<float> Pos2);
 Vector <float> findCentre(Rect<float> rect);
 
 void checkDir(Creep& Creep, std::vector <std::pair<userSprite, int>>& mapConstruct);
-void checkSpeed(int& gameSpeed, float deltaTime);
+void checkSpeed(int& gameSpeed, bool& gameStop, Game* game, float deltaTime);
 void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*>& Towers, std::vector<std::pair<userSprite, bool>>& Grass, int& buttonCheck, std::vector <userImages>& Textures);
 void towerClear(std::vector <Tower*>& Towers);
 void loadTexture(std::vector <userImages>& Textures, const std::vector <std::string>& texturePath);
