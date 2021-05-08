@@ -27,6 +27,6 @@ jobs:
           ./Test
       - name: "Build main project"
         run : |
-          chmod +x
+          chmod +x run.sh
           ./run.sh
           
