@@ -29,5 +29,6 @@ jobs:
         run : |
           mkdir build
           cd build
-          cmake .. & make
-          
+          cmake ..
+          make
+          ls
