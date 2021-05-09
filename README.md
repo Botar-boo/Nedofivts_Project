@@ -82,23 +82,12 @@
 
 2. Внутриигровой редактор:
 - Изменение уровня сложности
-- Ускорение 2х
-- Пауза
-- Выход из в главное меню
 - Выбор карты
+- Ускорение игрового процесса 2х
+- Пауза
+- Выход в главное меню
 
 3. Сборка под Linux, Mac
-
-### **Примеры:**
-
-![alt text](screenshots/Menu.png "Menu")​
-
-![alt text](screenshots/Settings.png "Settings")​
-
-![alt text](screenshots/Gameplay_1.png "Gameplay_1")​
-
-![alt text](screenshots/Gameplay_2.png "Gameplay_2")​
-
 
 ### **Паттерны:**
 1. Factory: \
@@ -110,3 +99,14 @@
 3. Singleton: \
 В файле Game. Создан для хранения данных игровой сессии
 
+### **Примеры:**
+
+![alt text](screenshots/Menu.png "Menu")​
+
+![alt text](screenshots/Settings.png "Settings")​
+
+![alt text](screenshots/Settings_new.png "Settings_new")​
+
+![alt text](screenshots/Gameplay_1.png "Gameplay_1")​
+
+![alt text](screenshots/Gameplay_2.png "Gameplay_2")​
