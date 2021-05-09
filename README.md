@@ -58,12 +58,14 @@
   sudo apt-get install libsfml-dev \
   chmod +x run.sh \
   ./run.sh
+  ./LastGame
   
 #### **Mac:**
   
   brew install sfml \
   chmod +x run.sh \
   ./run.sh
+  ./LastGame
 
 
 ### **Дополнительные условия:**
