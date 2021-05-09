@@ -7,7 +7,7 @@ Game::Game() {}
 
 void Game::startGame(bool Diff) {
     this->gameOver = false;
-    this->playerHealth = 1;
+    this->playerHealth = 15;
     this->playerGold = 40;
     this->waveNumber = 0;
     this->isHard = Diff;
