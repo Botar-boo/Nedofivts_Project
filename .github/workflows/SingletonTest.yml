@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ master, dev ]
 jobs:
-  runTest:
+  Build-ubuntu:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -28,6 +28,15 @@ jobs:
       - name: "Build main project"
         run : |
           sudo apt-get install libsfml-dev
+          chmod +x run.sh
+          ./run.sh
+  Build-macOs:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: "Build main project"
+        run : |
+          brew install sfml
           chmod +x run.sh
           ./run.sh
           
