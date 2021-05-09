@@ -128,6 +128,7 @@ bool userMouse::buttonPressed(char c) {
         return this->userMouse::isButtonPressed(userMouse::Left);
     if (c == 'R')
         return this->userMouse::isButtonPressed(userMouse::Right);
+    return false;
 }
 
 
