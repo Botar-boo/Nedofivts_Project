@@ -16,6 +16,11 @@
 - *Low speed*
 - *High armor*
 - *Low evasion*
+#### 3. Jegor:
+- *Even More health*
+- *Lower speed*
+- *Higher armor*
+- *No evasion*
 
 ### **Типы башен**
 
@@ -48,11 +53,24 @@
 
 *Запустите LastGame.exe*
 
+#### **Linux:**
+  
+  sudo apt-get install libsfml-dev \
+  chmod +x run.sh \
+  ./run.sh
+  
+#### **Mac:**
+  
+  brew install sfml \
+  chmod +x run.sh \
+  ./run.sh
+
+
 ### **Дополнительные условия:**
 
 *1. Графический интерфейс*
 
-*2. Внутриигровой редактор (пока маленький функционал)*
+*2. Внутриигровой редактор*
 
 ### **Изменения 1:**
 
@@ -60,11 +78,7 @@
 
 ### **Изменения 2:**
 
-1. Jegor Creep:
-- *Even More health*
-- *Lower speed*
-- *Higher armor*
-- *No evasion*
+1. Added Jegor Creep:
 
 2. Внутриигровой редактор:
 - Изменение уровня сложности
