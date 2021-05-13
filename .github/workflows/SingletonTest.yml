@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: "Build main project"
+        run : |
+          sudo apt-get install libsfml-dev
+          chmod +x run.sh
+          ./run.sh
       - name: "Build and run tests"
         run : |
           git clone https://github.com/google/googletest
@@ -25,11 +30,6 @@ jobs:
           cmake ..
           make
           ./Test
-      - name: "Build main project"
-        run : |
-          sudo apt-get install libsfml-dev
-          chmod +x run.sh
-          ./run.sh
   Build-macOs:
     runs-on: macos-latest
     steps:
