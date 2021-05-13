@@ -138,14 +138,16 @@ void Creep::setReward(int Reward) {
 }
 
 // Смерть и анимация смерти крипа
-void Creep::killCreep(std::vector <Creep>& Creeps, std::vector<std::pair<Creep, float>>& Dead, int creepNumber, float deltaTime) {
+void Creep::killCreep(std::vector <std::pair<Creep, std::vector<Ball>>>& Creeps, std::vector<std::pair<Creep, float>>& Dead, int creepNumber, float deltaTime) {
     auto it = Creeps.begin();
     for (int i = 0; i < creepNumber; ++i) {
         it++;
     }
-    it->animation.totalTime = 0;
-    it->animation.currImage.x = 0;
+    auto& creep = it->first;
+    creep.animation.totalTime = 0;
+    creep.animation.currImage.x = 0;
     Row = 1;
-    Dead.push_back({ *it, deadTime });
+    Dead.push_back({ creep, deadTime });
+    it->second.clear();
     Creeps.erase(it);
 }

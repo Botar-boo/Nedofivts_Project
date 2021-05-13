@@ -2,20 +2,22 @@
 
 // Logic proccesing
 
-void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>& Creeps, std::vector <std::pair<Creep, float>>& Dead, float deltaTime, MAP& Map) {
+void Logic(Game* currentGame, float deltaTime, MAP& Map) {
 
+    MediatorCreepBall mediator;
     // Tower state update
 
-    for (auto t : Towers) {
+    for (auto t : currentGame->Towers) {
         if (t->Timer > 0) {
             t->Timer -= deltaTime;
         }
         else {
-            for (unsigned int i = 0; i < Creeps.size(); i++) {
-                float deltaX = (t->getBody().gGB().left + t->getBody().gGB().width / 2) - (Creeps[i].getBody().gGB().left + Creeps[i].getBody().gGB().width / 2);
-                float deltaY = (t->getBody().gGB().top + t->getBody().gGB().height / 2) - (Creeps[i].getBody().gGB().top + Creeps[i].getBody().gGB().height / 2);
+            for (auto& Creep : currentGame->Creeps){
+                auto& creep = Creep.first;
+                float deltaX = findCentre(t->getBody().gGB()).x - findCentre(creep.getBody().gGB()).x;
+                float deltaY = findCentre(t->getBody().gGB()).y - findCentre(creep.getBody().gGB()).y;
                 if (sqrt(deltaX * deltaX + deltaY * deltaY) <= t->getArea().getRad()) {
-                    t->Fire(Creeps[i]);
+                    t->Fire(Creep);
                     break;
                 }
             }
@@ -24,63 +26,52 @@ void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>&
 
     // Creep state update
 
-    for (unsigned int i = 0; i < Creeps.size(); i++) {
-        checkDir(Creeps[i], Map.Road);
+    for (unsigned int i = 0; i < currentGame->Creeps.size(); i++) {
+        checkDir(currentGame->Creeps[i].first, Map.Road);
     }
 
     // Ball flight proccesing
-
-    for (unsigned int i = 0; i < Creeps.size(); ++i) {
-        Creeps[i].Update(deltaTime);
-        for (unsigned int j = 0; j < Creeps[i].ballsFollow.size(); ++j) {
-            Creeps[i].ballsFollow[j].Update(Creeps[i].getBody().getPos().x + Creeps[i].getBody().gGB().width / 2, Creeps[i].getBody().getPos().y + Creeps[i].getBody().gGB().height / 2, deltaTime);
-            Vector<float> ballPos = { Creeps[i].ballsFollow[j].getBody().getPos().x + Creeps[i].ballsFollow[j].getBody().gGB().width / 2, Creeps[i].ballsFollow[j].getBody().getPos().y + Creeps[i].ballsFollow[j].getBody().gGB().height / 2 };
-            Vector<float> creepPos = { Creeps[i].getBody().getPos().x + Creeps[i].getBody().gGB().width / 2, Creeps[i].getBody().getPos().y + Creeps[i].getBody().gGB().height / 2 };
-            if (epsCirclePos(ballPos, creepPos)) {
-                Creeps[i].getDamage(Creeps[i].ballsFollow[j]); //Creeps[i].setHealth(-Creeps[i].ballsFollow[j].getDamage()); 
-                Creeps[i].ballsFollow.erase(Creeps[i].ballsFollow.begin() + j);
-                --j;
-            }
-        }
-        Vector<float> creepPos = { Creeps[i].getBody().getPos().x + (Creeps[i].getBody().gGB().width / 2), Creeps[i].getBody().getPos().y + (Creeps[i].getBody().gGB().height / 2) };
-        Vector<float> endPos = { Map.Road[Map.endNumb].first.getPos().x + blockSize.x, Map.Road[Map.endNumb].first.getPos().y + blockSize.y / 2 };
-        if (epsCirclePos(creepPos, endPos)) {
-            Creeps[i].Arrived();
-            Creeps[i].setHealth(-Creeps[i].getHealth());
-            currentGame->decr_playerHealth();
-        }
+    
+    for (auto& Creep : currentGame->Creeps) {
+        auto& creep = Creep.first;
+        creep.Update(deltaTime);
+        mediator.processFlight(Creep, deltaTime);
     }
 
     // Getting damage
 
-    for (unsigned int i = 0; i < Creeps.size(); ++i) {
-        if (Creeps[i].getHealth() <= 0) {
+    for (int i = 0; i < currentGame->Creeps.size(); i++) {
+        auto& creep = currentGame->Creeps[i].first;
+        Vector<float> creepPos = { findCentre(creep.getBody().gGB()).x, findCentre(creep.getBody().gGB()).y };
+        Vector<float> endPos = { Map.Road[Map.endNumb].first.getPos().x + blockSize.x, Map.Road[Map.endNumb].first.getPos().y + blockSize.y / 2 };
 
-            if (Creeps[i].isKilled()) { currentGame->set_playerGold(Creeps[i].getReward()); }
+        if (epsCirclePos(creepPos, endPos)) {
+            creep.Arrived();
+            creep.setHealth(-creep.getHealth());
+            currentGame->decr_playerHealth();
+        }
+        if (creep.getHealth() <= 0) {
 
-            Creeps[i].ballsFollow.clear();
-            Creeps[i].killCreep(Creeps, Dead, i, deltaTime);
+            if (creep.isKilled()) { currentGame->set_playerGold(creep.getReward()); }
+            creep.killCreep(currentGame->Creeps, currentGame->Dead, i, deltaTime);
         }
     }
 
     // Preparing creep death animation
 
-    for (unsigned int i = 0; i < Dead.size(); i++) {
-        Dead[i].second -= deltaTime;
-        Dead[i].first.Update(deltaTime);
-        if (Dead[i].second <= 0) {
-            auto it = Dead.begin();
-            for (unsigned int j = 0; j < i; j++) {
-                it++;
-            }
-            Dead.erase(it);
+    for (int i = 0; i < currentGame->Dead.size(); i++) {
+        auto& dead = currentGame->Dead[i];
+        dead.second -= deltaTime;
+        dead.first.Update(deltaTime);
+        if (dead.second <= 0) {
+            currentGame->Dead.erase(currentGame->Dead.begin() + i);
         }
     }
 
     // Tower animation proccesing
 
-    for (unsigned int i = 0; i < Towers.size(); i++) {
-        Towers[i]->Update(deltaTime);
+    for (auto& tower : currentGame->Towers) {
+        tower->Update(deltaTime);
     }
 }
 
@@ -93,9 +84,6 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
     currentGame->startGame(gameSettings.Hard);
     int gameSpeed = 1;
     bool gameStop = false;
-    std::vector <std::pair<Creep, float>> Dead;
-    std::vector <Tower*> Towers;
-    std::vector <Creep> Creeps;
 
     // Initialization of textures, music and font
 
@@ -147,7 +135,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             int cnt;
             if (currentGame->get_difficulty()) cnt = 2 * currentGame->get_waveNumber() + 1;
             else cnt = currentGame->get_waveNumber();
-            Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
+            Visualize(currentGame, Window, sGameOver, Map, Blue, buttonCheck, Font);
 
             while (waitingTime > 0) {
                 if (gameStop) {
@@ -162,22 +150,22 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                 while (Window.pollEvent(e))
                     if (e.type == userEvent::Closed) {
                         Window.close();
-                        towerClear(Towers);
+                        towerClear(currentGame->Towers);
                         exit(0);
                     }
-                checkPress(currentGame, Window, Towers, Map.Grass, buttonCheck, Textures);
+                checkPress(currentGame, Window, Map.Grass, buttonCheck, Textures);
                 checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
 
-                for (unsigned int i = 0; i < Towers.size(); i++) {
-                    Towers[i]->Update(deltaTime);
+                for (unsigned int i = 0; i < currentGame->Towers.size(); i++) {
+                    currentGame->Towers[i]->Update(deltaTime);
                 }
-                Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
+                Visualize(currentGame, Window, sGameOver, Map, Blue, buttonCheck, Font);
 
             }
 
             buttonCheck = -1;
 
-            while (!Creeps.empty() || !Dead.empty() || cnt != 0) {
+            while (!currentGame->Creeps.empty() || !currentGame->Dead.empty() || cnt != 0) {
                 if (gameStop) {
                     deltaTime = gameSpeed * Clock.restart().asSeconds();
                     checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
@@ -188,24 +176,24 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                 while (Window.pollEvent(e))
                     if (e.type == userEvent::Closed) {
                         Window.close();
-                        towerClear(Towers);
+                        towerClear(currentGame->Towers);
                         exit(0);
                     }
                 checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
                 deltaTime = gameSpeed * Clock.restart().asSeconds();
-                if (cnt != 0) fillCreep(currentGame, Creeps, Map, releaseTime, deltaTime, cnt, Textures[0], Textures[1], Textures[14]);
-                Logic(currentGame, Towers, Creeps, Dead, deltaTime, Map);
+                if (cnt != 0) fillCreep(currentGame, Map, releaseTime, deltaTime, cnt, Textures[0], Textures[1], Textures[14]);
+                Logic(currentGame, deltaTime, Map);
                 if (currentGame->get_gameOver()) break;
                 if (currentGame->get_playerHealth() <= 0) {
                     currentGame->switch_gameOver();
                     break;
                 }
-                Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
+                Visualize(currentGame, Window, sGameOver, Map, Blue, buttonCheck, Font);
             }
             if (currentGame->get_gameOver()) {
-                Creeps.clear();
-                Towers.clear();
-                Dead.clear();
+                currentGame->Creeps.clear();
+                currentGame->Towers.clear();
+                currentGame->Dead.clear();
                 break;
             }
             else if (healthPrev == currentGame->get_playerHealth()) {
@@ -229,10 +217,10 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             while (Window.pollEvent(e))
                 if (e.type == userEvent::Closed) {
                     Window.close();
-                    towerClear(Towers);
+                    towerClear(currentGame->Towers);
                     exit(0);
                 }
-            Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
+            Visualize(currentGame, Window, sGameOver, Map, Blue, buttonCheck, Font);
         }
         break;
     }

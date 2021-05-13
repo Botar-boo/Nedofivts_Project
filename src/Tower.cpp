@@ -61,32 +61,32 @@ void Tower::setReload(float time) {
     this->Reload += time;
 }
 
-void Tower::Fire(Creep& creep) {}
+void Tower::Fire(std::pair<Creep, std::vector<Ball>>& creep) {}
 
 
 // Redefinition of method fire()
 
-void SingleTower::Fire(Creep& creep) {
+void SingleTower::Fire(std::pair<Creep, std::vector<Ball>>& creep) {
     FireBall fireball(this->getPosition());
-    creep.ballsFollow.push_back(fireball);
+    creep.second.push_back(fireball);
     this->Timer = this->getReload();
 }
 
-void MultiTower::Fire(Creep& creep) {
+void MultiTower::Fire(std::pair<Creep, std::vector<Ball>>&creep) {
     FireBall fireball(this->getPosition());
-    creep.ballsFollow.push_back(fireball);
+    creep.second.push_back(fireball);
     this->Timer = this->getReload();
 }
 
-void FreezingTower::Fire(Creep& creep) {
+void FreezingTower::Fire(std::pair<Creep, std::vector<Ball>>& creep) {
     SnowBall snowball(this->getPosition());
-    creep.ballsFollow.push_back(snowball);
+    creep.second.push_back(snowball);
     this->Timer = this->getReload();
 }
 
-void OnePunchTower::Fire(Creep& creep) {
+void OnePunchTower::Fire(std::pair<Creep, std::vector<Ball>>& creep) {
     DesolBall desolball(this->getPosition());
-    creep.ballsFollow.push_back(desolball);
+    creep.second.push_back(desolball);
     this->Timer = this->getReload();
 }
 

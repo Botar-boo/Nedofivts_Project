@@ -18,38 +18,38 @@ Vector <float> findCentre(Rect<float> rect) {
 
 // Creating creep wave at the begining of the round
 
-void fillCreep(Game* currentGame, std::vector<Creep>& Creeps, MAP& Map, float& releaseTime, float deltaTime, int& cnt, userImages& tSameer, userImages& tBatyr, userImages& tJegor) {
+void fillCreep(Game* currentGame, MAP& Map, float& releaseTime, float deltaTime, int& cnt, userImages& tSameer, userImages& tBatyr, userImages& tJegor) {
     releaseTime -= deltaTime;
     if (releaseTime <= 0 && cnt != 0) {
         releaseTime = deadTime;
         if (cnt % 3 == 0) 
-            Creeps.push_back(Jegor(tJegor, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
+            currentGame->Creeps.push_back({Jegor(tJegor, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first), {}});
         else if (cnt % 3 == 1)
-                Creeps.push_back(Batyr(tBatyr, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
+                currentGame->Creeps.push_back({Batyr(tBatyr, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first), {}});
             else
-                Creeps.push_back(Sameer(tSameer, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
+                currentGame->Creeps.push_back({Sameer(tSameer, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first), {}});
         cnt--;
     }
 }
 
 // Rendering map, units, additional objects
-void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::vector <Creep>& Creeps, std::vector <Tower*>& Towers, std::vector <std::pair<Creep, float>>& Dead, MAP& Map, userFont& Font) {
+void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userFont& Font) {
     drawMap(App, Map);
 
-    for (unsigned int i = 0; i < Creeps.size(); ++i) {
-        App.userDraw(Creeps[i].getBody());
-        for (unsigned int j = 0; j < Creeps[i].ballsFollow.size(); ++j) { 
-            App.userDraw(Creeps[i].ballsFollow[j].getBody()); 
+    for (unsigned int i = 0; i < currentGame->Creeps.size(); ++i) {
+        App.userDraw(currentGame->Creeps[i].first.getBody());
+        for (unsigned int j = 0; j < currentGame->Creeps[i].second.size(); ++j) { 
+            App.userDraw(currentGame->Creeps[i].second[j].getBody()); 
         }
     }
 
 
-    for (unsigned int i = 0; i < Dead.size(); ++i) {
-        App.userDraw(Dead[i].first.getBody());
+    for (unsigned int i = 0; i < currentGame->Dead.size(); ++i) {
+        App.userDraw(currentGame->Dead[i].first.getBody());
     }
 
-    for (unsigned int i = 0; i < Towers.size(); ++i) {
-        App.userDraw(Towers[i]->getBody());
+    for (unsigned int i = 0; i < currentGame->Towers.size(); ++i) {
+        App.userDraw(currentGame->Towers[i]->getBody());
     }
     userText Money("Gold: " + std::to_string(currentGame->get_playerGold()), Font, fontSize1);
     userText Lives("Health: " + std::to_string(currentGame->get_playerHealth()), Font, fontSize2);
@@ -66,9 +66,9 @@ void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::v
 }
 
 // Visualization of objects
-void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::vector <Creep>& Creeps, std::vector <Tower*>& Towers, std::vector <std::pair<Creep, float>>& Dead, MAP& Map, userColor& Blue, int& buttonCheck, userFont& Font) {
+void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userColor& Blue, int& buttonCheck, userFont& Font) {
     App.userClear();
-    Draw(currentGame, App, sGameOver, Creeps, Towers, Dead, Map, Font);
+    Draw(currentGame, App, sGameOver, Map, Font);
     if (buttonCheck != -1) {
         userCircleShape Area;
         Area.setOrigin(originPosition.x, originPosition.y);
@@ -100,7 +100,7 @@ void checkSpeed(int& gameSpeed, bool& gameStop, Game* game, float deltaTime) {
     }
 }
 
-void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*>& Towers, std::vector<std::pair<userSprite, bool>>& Grass, int& buttonCheck, std::vector <userImages>& Textures) {
+void checkPress(Game* currentGame, userRenderWindow& Window, std::vector<std::pair<userSprite, bool>>& Grass, int& buttonCheck, std::vector <userImages>& Textures) {
     userKeyboard kBoard;
     if (kBoard.checkButtonPressed('Q')) {
         buttonCheck = 0;
@@ -133,7 +133,7 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
                     Vector<float> grassPos = { findCentre(Grass[i].first.gGB()).x - towerSize.x / 2, findCentre(Grass[i].first.gGB()).y - towerSize.y / 2 };
                     Tower* Tower = new SingleTower(Textures[2], grassPos);
                     if (Tower->getPrice() <= static_cast <int> (currentGame->get_playerGold())) {
-                        addNewTower(currentGame, Towers, Tower);
+                        addNewTower(currentGame, Tower);
                         Grass[i].second = true;
                     }
                     else {
@@ -161,7 +161,7 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
                     Vector<float> grassPos = { findCentre(Grass[i].first.gGB()).x - towerSize.x / 2, findCentre(Grass[i].first.gGB()).y - towerSize.y / 2 };
                     Tower* Tower = new MultiTower(Textures[3], grassPos);
                     if (static_cast <int> (Tower->getPrice()) <= static_cast <int> (currentGame->get_playerGold())) {
-                        addNewTower(currentGame, Towers, Tower);
+                        addNewTower(currentGame, Tower);
                         Grass[i].second = true;
                     }
                     else {
@@ -189,7 +189,7 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
                     Vector<float> grassPos = { findCentre(Grass[i].first.gGB()).x - towerSize.x / 2, findCentre(Grass[i].first.gGB()).y - towerSize.y / 2 };
                     Tower* Tower = new FreezingTower(Textures[4], grassPos);
                     if (static_cast <int> (Tower->getPrice()) <= static_cast <int> (currentGame->get_playerGold())) {
-                        addNewTower(currentGame, Towers, Tower);
+                        addNewTower(currentGame, Tower);
                         Grass[i].second = true;
                     }
                     else {
@@ -217,7 +217,7 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
                     Vector<float> grassPos = { findCentre(Grass[i].first.gGB()).x - towerSize.x / 2, findCentre(Grass[i].first.gGB()).y - towerSize.y / 2 };
                     Tower* Tower = new OnePunchTower(Textures[5], grassPos);
                     if (static_cast <int> (Tower->getPrice()) <= static_cast <int> (currentGame->get_playerGold())) {
-                        addNewTower(currentGame, Towers, Tower);
+                        addNewTower(currentGame, Tower);
                         Grass[i].second = true;
                     }
                     else {
@@ -236,9 +236,9 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
 
 // Add new tower to vector
 
-void addNewTower(Game* currentGame, std::vector <Tower*>& Towers, Tower* newTower) {
-    Towers.push_back(newTower);
-    std::sort(Towers.begin(), Towers.end(), [](Tower* Tower1, Tower* Tower2) { return Tower1->getBody().gGB().top < Tower2->getBody().gGB().top; });
+void addNewTower(Game* currentGame, Tower* newTower) {
+    currentGame->Towers.push_back(newTower);
+    std::sort(currentGame->Towers.begin(), currentGame->Towers.end(), [](Tower* Tower1, Tower* Tower2) { return Tower1->getBody().gGB().top < Tower2->getBody().gGB().top; });
     currentGame->set_playerGold(-newTower->getPrice());
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "Maps.h"
 
 class Game {
 public:
@@ -26,6 +27,10 @@ public:
 
     void startGame(bool Diff);
 
+public:
+    std::vector <std::pair<Creep, float>> Dead;
+    std::vector <Tower*> Towers;
+    std::vector <std::pair<Creep, std::vector<Ball>>> Creeps; // Восхождение Кракена
 private:
     Game();
     bool gameOver;
@@ -33,5 +38,4 @@ private:
     unsigned int playerGold;
     unsigned int waveNumber;
     bool isHard; // true = Hard, false = Easy
-
 };

@@ -12,7 +12,7 @@ public:
     float getHealth();
 
     void Update(float deltaTime);
-    void killCreep(std::vector <Creep>& Creeps, std::vector<std::pair<Creep, float>>& Dead, int creepNumber, float deltaTime);
+    void killCreep(std::vector <std::pair<Creep, std::vector<Ball>>>& Creeps, std::vector<std::pair<Creep, float>>& Dead, int creepNumber, float deltaTime);
 
     void setDirection(int Dir);
     int getDirection();
@@ -28,7 +28,7 @@ public:
 
     void getDamage(Ball Ball);
 public:
-    std::vector<Ball> ballsFollow;
+
     float Armor;
     float Evasion;
 
