@@ -1,4 +1,4 @@
-#include "Gameplay.h"
+#include "../include/Gameplay.h"
 
 // Logic proccesing
 

@@ -1,4 +1,4 @@
-#include "AnimationGame.h"
+#include "../include/AnimationGame.h"
 
 
 Animation::Animation(userImages* texture, Vector<int> imageCount, float switchTime) {

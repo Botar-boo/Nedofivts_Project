@@ -1,4 +1,4 @@
-#include "Adapter.h"
+#include "../include/Adapter.h"
 
 // Adapters to SFML objects
 userImages::userImages() : sf::Texture() {} // calls sf::Texture constructor

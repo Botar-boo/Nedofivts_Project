@@ -1,4 +1,4 @@
-#include "Mediator.h"
+#include "../include/Mediator.h"
 
 void MediatorCreepBall::processFlight(std::pair<Creep, std::vector<Ball>>& CreepBall, float deltaTime) {
     auto& creep = CreepBall.first;

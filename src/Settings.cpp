@@ -1,4 +1,4 @@
-#include "Settings.h"
+#include "../include/Settings.h"
 
 void fillAdditional(std::vector<userSprite>& Minimap,
 					std::vector <userImages>& MinimapTextures,

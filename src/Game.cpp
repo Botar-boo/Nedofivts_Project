@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "../include/Game.h"
 
 // General object that contains all information about current game
 Game* Game::instance;
