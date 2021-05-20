@@ -30,7 +30,7 @@ public:
 public:
     std::vector <std::pair<Creep, float>> Dead;
     std::vector <Tower*> Towers;
-    std::vector <std::pair<Creep, std::vector<Ball>>> Creeps; // Восхождение Кракена
+    std::vector <Creep> Creeps;
 private:
     Game();
     bool gameOver;

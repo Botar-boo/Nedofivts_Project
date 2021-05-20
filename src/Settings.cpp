@@ -7,7 +7,7 @@ void fillAdditional(std::vector<userSprite>& Minimap,
 					std::vector<std::pair<userImages, userImages>>& AddTextures,
 					GameSettings gameSettings) {
 
-    for (int i = 0; i < MinimapTextures.size(); ++i) {
+    for (unsigned int i = 0; i < MinimapTextures.size(); ++i) {
         MinimapTextures[i].loadTexture(tMinimapPath[i]);
         userSprite map(MinimapTextures[i]);
         map.setPos(MinimapPos.x, MinimapPos.y);
@@ -76,7 +76,7 @@ void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
     
     userClock Clock;
     float deltaTime;
-    float switchTime = 0.15;
+    float switchTime = 0.15f;
     float totalTime = 0;
 
 	while (Window.isOpen() && !goBack) {

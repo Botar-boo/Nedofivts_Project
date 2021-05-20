@@ -3,8 +3,6 @@
 // Logic proccesing
 
 void Logic(Game* currentGame, float deltaTime, MAP& Map) {
-
-    MediatorCreepBall mediator;
     // Tower state update
 
     for (auto t : currentGame->Towers) {
@@ -12,12 +10,11 @@ void Logic(Game* currentGame, float deltaTime, MAP& Map) {
             t->Timer -= deltaTime;
         }
         else {
-            for (auto& Creep : currentGame->Creeps){
-                auto& creep = Creep.first;
+            for (auto& creep : currentGame->Creeps){
                 float deltaX = findCentre(t->getBody().gGB()).x - findCentre(creep.getBody().gGB()).x;
                 float deltaY = findCentre(t->getBody().gGB()).y - findCentre(creep.getBody().gGB()).y;
                 if (sqrt(deltaX * deltaX + deltaY * deltaY) <= t->getArea().getRad()) {
-                    t->Fire(Creep);
+                    t->Fire(creep);
                     break;
                 }
             }
@@ -25,23 +22,18 @@ void Logic(Game* currentGame, float deltaTime, MAP& Map) {
     }
 
     // Creep state update
-
-    for (unsigned int i = 0; i < currentGame->Creeps.size(); i++) {
-        checkDir(currentGame->Creeps[i].first, Map.Road);
-    }
-
+    // &
     // Ball flight proccesing
     
-    for (auto& Creep : currentGame->Creeps) {
-        auto& creep = Creep.first;
-        creep.Update(deltaTime);
-        mediator.processFlight(Creep, deltaTime);
+    for (unsigned int i = 0; i < currentGame->Creeps.size(); i++) {
+        checkDir(currentGame->Creeps[i], Map.Road);
+        currentGame->Creeps[i].Update(deltaTime);
     }
 
     // Getting damage
 
     for (int i = 0; i < currentGame->Creeps.size(); i++) {
-        auto& creep = currentGame->Creeps[i].first;
+        auto& creep = currentGame->Creeps[i];
         Vector<float> creepPos = { findCentre(creep.getBody().gGB()).x, findCentre(creep.getBody().gGB()).y };
         Vector<float> endPos = { Map.Road[Map.endNumb].first.getPos().x + blockSize.x, Map.Road[Map.endNumb].first.getPos().y + blockSize.y / 2 };
 

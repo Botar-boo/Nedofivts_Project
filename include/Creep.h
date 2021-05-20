@@ -1,7 +1,6 @@
 #pragma once
 #include "Unit.h"
 
-
 class Creep : public Unit {
 public:
     Creep(userImages& Texture, userSprite& startBlock, Vector<int> imageCount, float sizeX, float sizeY, float Health, float Speed);
@@ -12,7 +11,7 @@ public:
     float getHealth();
 
     void Update(float deltaTime);
-    void killCreep(std::vector <std::pair<Creep, std::vector<Ball>>>& Creeps, std::vector<std::pair<Creep, float>>& Dead, int creepNumber, float deltaTime);
+    void killCreep(std::vector <Creep>& Creeps, std::vector<std::pair<Creep, float>>& Dead, int creepNumber, float deltaTime);
 
     void setDirection(int Dir);
     int getDirection();
@@ -27,12 +26,19 @@ public:
     float getSpeed();
 
     void getDamage(Ball Ball);
-public:
 
+    void startProcessing(float deltaTime, const std::string Event);
+    void addBall(Ball& ball);
+    std::vector <Ball> getBalls();
+    void setMediator(MediatorCreepBall *mediator);
+
+public:
     float Armor;
     float Evasion;
+    std::vector<Ball> BallsFlow;
 
 private:
+    MediatorCreepBall *Mediator = nullptr;
     unsigned int Reward;
     int Dir;
     bool Killed;
@@ -56,4 +62,14 @@ class Jegor : public Creep {
 public:
     Jegor(userImages& Texture, unsigned int waveNumber, userSprite& startBlock);
     ~Jegor() {}
+};
+
+class MediatorCreepBall {
+public:
+    MediatorCreepBall(){};
+    ~MediatorCreepBall() {};
+
+    void processFlight(Creep* creep,float deltaTime);
+    void clearBallsFlow(Creep* creep);
+
 };

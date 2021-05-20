@@ -1,5 +1,7 @@
 #include "Additional.h"
 
+class MediatorCreepBall;
+
 class Unit {
 public:
     Unit(userImages& Texture, Vector<int> imageCount, float sizeX, float sizeY);

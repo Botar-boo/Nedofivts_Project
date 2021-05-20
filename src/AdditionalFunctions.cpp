@@ -22,12 +22,25 @@ void fillCreep(Game* currentGame, MAP& Map, float& releaseTime, float deltaTime,
     releaseTime -= deltaTime;
     if (releaseTime <= 0 && cnt != 0) {
         releaseTime = deadTime;
-        if (cnt % 3 == 0) 
-            currentGame->Creeps.push_back({Jegor(tJegor, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first), {}});
-        else if (cnt % 3 == 1)
-                currentGame->Creeps.push_back({Batyr(tBatyr, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first), {}});
-            else
-                currentGame->Creeps.push_back({Sameer(tSameer, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first), {}});
+        if (cnt % 3 == 0) {
+            Jegor Jegor(tJegor, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first);
+            MediatorCreepBall m;
+            Jegor.setMediator(&m);
+            currentGame->Creeps.push_back(Jegor);
+        }
+            
+        else if (cnt % 3 == 1) {
+            Batyr Batyr(tBatyr, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first);
+            MediatorCreepBall m;
+            Batyr.setMediator(&m);
+            currentGame->Creeps.push_back(Batyr);
+        }
+        else {
+            Sameer Sameer(tSameer, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first);
+            MediatorCreepBall m;
+            Sameer.setMediator(&m);
+            currentGame->Creeps.push_back(Sameer);
+        }
         cnt--;
     }
 }
@@ -37,9 +50,9 @@ void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& M
     drawMap(App, Map);
 
     for (unsigned int i = 0; i < currentGame->Creeps.size(); ++i) {
-        App.userDraw(currentGame->Creeps[i].first.getBody());
-        for (unsigned int j = 0; j < currentGame->Creeps[i].second.size(); ++j) { 
-            App.userDraw(currentGame->Creeps[i].second[j].getBody()); 
+        App.userDraw(currentGame->Creeps[i].getBody());
+        for (unsigned int j = 0; j < currentGame->Creeps[i].getBalls().size(); ++j) { 
+            App.userDraw(currentGame->Creeps[i].getBalls()[j].getBody()); 
         }
     }
 

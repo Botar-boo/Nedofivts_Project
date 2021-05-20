@@ -1,19 +1,22 @@
 #include "../include/Mediator.h"
 
-void MediatorCreepBall::processFlight(std::pair<Creep, std::vector<Ball>>& CreepBall, float deltaTime) {
-    auto& creep = CreepBall.first;
-    Vector<float> creepPos = { findCentre(creep.getBody().gGB()).x, findCentre(creep.getBody().gGB()).y };
+void MediatorCreepBall::processFlight(Creep* creep, float deltaTime) {
+    Vector<float> creepPos = { findCentre(creep->getBody().gGB()).x, findCentre(creep->getBody().gGB()).y };
     
-    for (int j = 0; j < CreepBall.second.size(); j++) {
-        auto& ball = CreepBall.second[j];
+    for (unsigned int j = 0; j < creep->BallsFlow.size(); j++) {
+        auto& ball = creep->BallsFlow[j];
         Vector<float> ballPos = { findCentre(ball.getBody().gGB()).x, findCentre(ball.getBody().gGB()).y };
 
         ball.Update(creepPos.x, creepPos.y, deltaTime);
 
         if (epsCirclePos(ballPos, creepPos)) {
-            creep.getDamage(ball);
-            CreepBall.second.erase(CreepBall.second.begin() + j);
+            creep->getDamage(ball);
+            creep->BallsFlow.erase(creep->BallsFlow.begin() + j);
             --j;
         }
     }
+}
+
+void MediatorCreepBall::clearBallsFlow(Creep* creep) {
+    creep->BallsFlow.clear();
 }

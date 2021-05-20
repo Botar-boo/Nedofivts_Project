@@ -1,12 +1,12 @@
 #include "../include/Creep.h"
 
-
 Creep::Creep(userImages& Texture, userSprite& startBlock, Vector<int> imageCount, float sizeX, float sizeY, float Health, float Speed) :
     Unit(
         Texture,
         imageCount,
         sizeX,
-        sizeY) {
+        sizeY)
+{
     this->Killed = true;
     this->Health = Health;
     this->Speed = Speed;
@@ -64,7 +64,7 @@ Jegor::Jegor(userImages& Texture, unsigned int waveNumber, userSprite& startBloc
 // Preparing creep animation for update
 void Creep::Update(float deltaTime) {
     Vector<float> movement = { 0.0f, 0.0f };
-
+    startProcessing(deltaTime, "flight");
     if (Row == 0) {
         if (this->Dir == 0) {
             movement.x += Speed * deltaTime;
@@ -137,17 +137,36 @@ void Creep::setReward(int Reward) {
     this->Reward = Reward;
 }
 
+
 // Смерть и анимация смерти крипа
-void Creep::killCreep(std::vector <std::pair<Creep, std::vector<Ball>>>& Creeps, std::vector<std::pair<Creep, float>>& Dead, int creepNumber, float deltaTime) {
+void Creep::killCreep(std::vector <Creep>& Creeps, std::vector<std::pair<Creep, float>>& Dead, int creepNumber, float deltaTime) {
     auto it = Creeps.begin();
     for (int i = 0; i < creepNumber; ++i) {
         it++;
     }
-    auto& creep = it->first;
+    auto& creep = *it;
     creep.animation.totalTime = 0;
     creep.animation.currImage.x = 0;
     Row = 1;
     Dead.push_back({ creep, deadTime });
-    it->second.clear();
+    this->startProcessing(deltaTime, "clear");
     Creeps.erase(it);
 }
+
+
+std::vector <Ball> Creep::getBalls() {
+    return this->BallsFlow;
+}
+
+ void Creep::setMediator(MediatorCreepBall *mediator) {
+    this->Mediator = mediator;
+ }
+
+ void Creep::startProcessing(float deltaTime, const std::string Event) {
+    if (Event == "flight") this->Mediator->processFlight(this, deltaTime);
+    if (Event == "clear") this->Mediator->clearBallsFlow(this);
+}
+
+ void Creep::addBall(Ball& ball) {
+     this->BallsFlow.push_back(ball);
+ }

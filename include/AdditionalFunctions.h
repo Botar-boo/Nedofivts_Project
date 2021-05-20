@@ -2,9 +2,9 @@
 #include "Game.h"
 
 
+Vector <float> findCentre(Rect<float> rect);
 bool epsSqPos(Vector<float> Pos1, Vector<float> Pos2);
 bool epsCirclePos(Vector<float> Pos1, Vector<float> Pos2);
-Vector <float> findCentre(Rect<float> rect);
 
 void checkDir(Creep& Creep, std::vector <std::pair<userSprite, int>>& mapConstruct);
 void checkSpeed(int& gameSpeed, bool& gameStop, Game* game, float deltaTime);

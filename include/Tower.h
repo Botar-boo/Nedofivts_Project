@@ -7,7 +7,7 @@ public:
     Tower(userImages& Texture, Vector<float> Pos, unsigned int Price);
     ~Tower() {}
 public:
-    virtual void Fire(std::pair<Creep, std::vector<Ball>>& creep);
+    virtual void Fire(Creep& creep);
 
     float getReload();
     void setReload(float Time);
@@ -29,14 +29,14 @@ public:
     SingleTower(userImages& Texture, Vector<float> Pos);
     ~SingleTower() {}
 
-    void Fire(std::pair<Creep, std::vector<Ball>>& creep);
+    void Fire(Creep& creep);
 };
 
 class MultiTower : public Tower {
 public:
     MultiTower(userImages& Texture, Vector<float> Pos);
 
-    void Fire(std::pair<Creep, std::vector<Ball>>& creep);
+    void Fire(Creep& creep);
 private:
     unsigned int shotCount;
 };
@@ -46,7 +46,7 @@ public:
     FreezingTower(userImages& Texture, Vector<float> Pos);
     ~FreezingTower() {}
 
-    void Fire(std::pair<Creep, std::vector<Ball>>& creep);
+    void Fire(Creep& creep);
 };
 
 class OnePunchTower : public Tower {
@@ -54,5 +54,5 @@ public:
     OnePunchTower(userImages& Texture, Vector<float> Pos);
     ~OnePunchTower() {}
 
-    void Fire(std::pair<Creep, std::vector<Ball>>& creep);
+    void Fire(Creep& creep);
 };
