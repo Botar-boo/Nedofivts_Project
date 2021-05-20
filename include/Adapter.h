@@ -54,7 +54,7 @@ public:
 class userClock : public sf::Clock {
 public:
     userClock();
-    ~userClock() {};
+    ~userClock() {};	
 };
 
 class userColor : public sf::Color {

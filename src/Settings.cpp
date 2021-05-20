@@ -91,7 +91,7 @@ void Settings(userRenderWindow& Window, GameSettings& gameSettings) {
         
 		Vector<float> Pos = { 0.f, 0.f };
 		userMouse mouse;
-        if (totalTime > switchTime) {
+		if (totalTime > switchTime) {
             totalTime -= switchTime;
             if (mouse.buttonPressed('L')) {
 			    Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };

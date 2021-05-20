@@ -11,10 +11,6 @@ void Menu(userRenderWindow& Window, GameSettings& gameSettings) {
             "images/Play.png",
             "images/Settings.png" };
     const std::string tBackgroundPath = "images/GrassGround.png";
-    /*const std::vector <std::string> tButtonPath = {
-            "images/Play.jpg",
-            "images/Settings.jpg" };
-    const std::string tBackgroundPath = "images/GrassGround.jpg";*/
 
     std::vector <userImages> ButtonTextures(menuButtons);
     userImages tBackground;

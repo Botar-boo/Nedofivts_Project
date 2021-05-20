@@ -13,8 +13,8 @@ void towerClear(std::vector <Tower*>& Towers);
 void loadTexture(std::vector <userImages>& Textures, const std::vector <std::string>& texturePath);
 void addNewTower(Game* currentGame, Tower* newTower);
 
-void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userFont& Font);
-void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userColor& Blue, int& buttonCheck, userFont& Font);
+void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userFont Font);
+void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userFont Font, int& buttonCheck);
 void fillCreep(Game* currentGame, MAP& Map, float& releaseTime, float deltaTime, int& Cnt, userImages& tSameer, userImages& tBatyr, userImages& tJegor);
 
 void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& Buttons, std::vector<userSprite>& Background, std::vector<userSprite>& AddObjects);

@@ -71,13 +71,13 @@ void Logic(Game* currentGame, float deltaTime, MAP& Map) {
 
 void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSettings& gameSettings) {
     srand(static_cast <unsigned int> (time(0)));
-
+    Facade facade;
     Game* currentGame = Game::get_instance();
     currentGame->startGame(gameSettings.Hard);
     int gameSpeed = 1;
-    bool gameStop = false;
+    bool gameStop = false;	
 
-    // Initialization of textures, music and font
+	// Initialization of textures, music and font
 
     userImages tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround, tJegor;
     std::vector <userImages> Textures = { tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround, tJegor};
@@ -99,13 +99,11 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                                                     "images/Jegor.png" };
 
     loadTexture(Textures, texturePath);
-    userFont Font;
-    Font.loadFromFile("images/Classic.ttf");
     int buttonCheck = -1;
-    userMusic Music;
-    Music.playMusic("images/music.ogg");
-    userColor Blue = userColor(0, 0, 255, 25);
-
+    facade.CreateMusic();
+    facade.playMusic("images/music.ogg");
+    facade.CreateFont();
+    facade.loadFont("images/Classic.ttf");
     MAP Map;
     createMap(Map, gameSettings, Textures);
 
@@ -113,7 +111,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
     sGameOver.setPos(gameOverPosition.x, gameOverPosition.y);
 
     float deltaTime;
-    userClock Clock;
+    facade.CreateClock();
     int healthPrev = currentGame->get_playerHealth();
 
     while (Window.windowOpen()) {
@@ -127,16 +125,16 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             int cnt;
             if (currentGame->get_difficulty()) cnt = 2 * currentGame->get_waveNumber() + 1;
             else cnt = currentGame->get_waveNumber();
-            Visualize(currentGame, Window, sGameOver, Map, Blue, buttonCheck, Font);
+            Visualize(currentGame, Window, sGameOver, Map,  facade.getFont(), buttonCheck);
 
             while (waitingTime > 0) {
                 if (gameStop) {
-                    deltaTime = gameSpeed * Clock.restart().asSeconds();
+                    deltaTime = gameSpeed * facade.restartClock();
                     checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
                     continue;
                 }
                 if (currentGame->get_gameOver()) break;
-                deltaTime = gameSpeed * Clock.restart().asSeconds();
+                deltaTime = gameSpeed * facade.restartClock();
                 waitingTime -= deltaTime;
                 userEvent e;
                 while (Window.pollEvent(e))
@@ -151,7 +149,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                 for (unsigned int i = 0; i < currentGame->Towers.size(); i++) {
                     currentGame->Towers[i]->Update(deltaTime);
                 }
-                Visualize(currentGame, Window, sGameOver, Map, Blue, buttonCheck, Font);
+                Visualize(currentGame, Window, sGameOver, Map, facade.getFont(), buttonCheck);
 
             }
 
@@ -159,12 +157,11 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
 
             while (!currentGame->Creeps.empty() || !currentGame->Dead.empty() || cnt != 0) {
                 if (gameStop) {
-                    deltaTime = gameSpeed * Clock.restart().asSeconds();
+                    deltaTime = gameSpeed * facade.restartClock();
                     checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
                     continue;
                 }
                 userEvent e;
-
                 while (Window.pollEvent(e))
                     if (e.type == userEvent::Closed) {
                         Window.close();
@@ -172,7 +169,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                         exit(0);
                     }
                 checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
-                deltaTime = gameSpeed * Clock.restart().asSeconds();
+                deltaTime = gameSpeed * facade.restartClock();
                 if (cnt != 0) fillCreep(currentGame, Map, releaseTime, deltaTime, cnt, Textures[0], Textures[1], Textures[14]);
                 Logic(currentGame, deltaTime, Map);
                 if (currentGame->get_gameOver()) break;
@@ -180,7 +177,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                     currentGame->switch_gameOver();
                     break;
                 }
-                Visualize(currentGame, Window, sGameOver, Map, Blue, buttonCheck, Font);
+                Visualize(currentGame, Window, sGameOver, Map, facade.getFont(), buttonCheck);
             }
             if (currentGame->get_gameOver()) {
                 currentGame->Creeps.clear();
@@ -198,7 +195,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             currentGame->incr_waveNumber();
         }
         while (currentGame->get_gameOver()) {
-            deltaTime = gameSpeed * Clock.restart().asSeconds();
+            deltaTime = gameSpeed * facade.restartClock();;
             static float gameOverTime = 0;
             gameOverTime += deltaTime;
             if (gameOverTime > 5) {
@@ -212,7 +209,7 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
                     towerClear(currentGame->Towers);
                     exit(0);
                 }
-            Visualize(currentGame, Window, sGameOver, Map, Blue, buttonCheck, Font);
+            Visualize(currentGame, Window, sGameOver, Map, facade.getFont(), buttonCheck);
         }
         break;
     }

@@ -46,7 +46,7 @@ void fillCreep(Game* currentGame, MAP& Map, float& releaseTime, float deltaTime,
 }
 
 // Rendering map, units, additional objects
-void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userFont& Font) {
+void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userFont Font) {
     drawMap(App, Map);
 
     for (unsigned int i = 0; i < currentGame->Creeps.size(); ++i) {
@@ -79,15 +79,17 @@ void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& M
 }
 
 // Visualization of objects
-void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userColor& Blue, int& buttonCheck, userFont& Font) {
+void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userFont Font, int& buttonCheck) {
     App.userClear();
+    Facade facade;
+    facade.CreateColor(0, 0, 255, 25);
     Draw(currentGame, App, sGameOver, Map, Font);
     if (buttonCheck != -1) {
         userCircleShape Area;
         Area.setOrigin(originPosition.x, originPosition.y);
         Area.setRadius(towerRadius);
         Area.setPos(static_cast<float>(userMouse::getPosition(App).x), static_cast<float>(userMouse::getPosition(App).y));
-        Area.setFillColor(Blue);
+        Area.setFillColor(facade.getColor());
         App.userDraw(Area);
     }
     App.userDisplay();
@@ -96,45 +98,47 @@ void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, M
 
 // Check keypress
 void checkSpeed(int& gameSpeed, bool& gameStop, Game* game, float deltaTime) {
-    userKeyboard kBoard;
+    Facade facade;
+    facade.CreateKeyboard();
     static float speedTime = 0, stopTime = 0;
     speedTime += deltaTime;
     stopTime += deltaTime;
-    if (kBoard.checkButtonPressed('A') && speedTime >= 0.2) {
+    if (facade.buttonPressed('A') && speedTime >= 0.2) {
         gameSpeed = 3 - gameSpeed;
         speedTime = 0;
     }
-    if (kBoard.checkButtonPressed('B') && stopTime >= 0.2) {
+    if (facade.buttonPressed('B') && stopTime >= 0.2) {
         gameStop = !gameStop;
         stopTime = 0;
     }
-    if (kBoard.checkButtonPressed('D')) {
+    if (facade.buttonPressed('D')) {
         game->set_gameOver();
     }
 }
 
 void checkPress(Game* currentGame, userRenderWindow& Window, std::vector<std::pair<userSprite, bool>>& Grass, int& buttonCheck, std::vector <userImages>& Textures) {
-    userKeyboard kBoard;
-    if (kBoard.checkButtonPressed('Q')) {
+    Facade facade;
+    facade.CreateKeyboard();
+    if (facade.buttonPressed('Q')) {
         buttonCheck = 0;
     }
-    if (kBoard.checkButtonPressed('W')) {
+    if (facade.buttonPressed('W')) {
         buttonCheck = 1;
     }
-    if (kBoard.checkButtonPressed('E')) {
+    if (facade.buttonPressed('E')) {
         buttonCheck = 2;
     }
-    if (kBoard.checkButtonPressed('R')) {
+    if (facade.buttonPressed('R')) {
         buttonCheck = 3;
     }
-    if (kBoard.checkButtonPressed('X')) {
+    if (facade.buttonPressed('X')) {
         buttonCheck = -1;
     }
-    userMouse mouse;
+    facade.CreateMouse();
     switch (buttonCheck) {
     case 0: {
-        if (mouse.buttonPressed('L')) {
-            Vector<float> Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
+        if (facade.mousePressed('L')) {
+            Vector<float> Pos = { facade.getMousePos(Window).x, facade.getMousePos(Window).y };
 
             for (unsigned int i = 0; i < Grass.size(); ++i) {
                 Vector<float> cellCenter = { findCentre(Grass[i].first.gGB()).x , findCentre(Grass[i].first.gGB()).y };
@@ -161,8 +165,8 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector<std::pa
         break;
     }
     case 1: {
-        if (mouse.buttonPressed('L')) {
-            Vector<float> Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
+        if (facade.mousePressed('L')) {
+            Vector<float> Pos = { facade.getMousePos(Window).x, facade.getMousePos(Window).y };
 
             for (unsigned int i = 0; i < Grass.size(); ++i) {
                 Vector<float> cellCenter = { findCentre(Grass[i].first.gGB()).x , findCentre(Grass[i].first.gGB()).y };
@@ -189,8 +193,8 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector<std::pa
         break;
     }
     case 2: {
-        if (mouse.buttonPressed('L')) {
-            Vector<float> Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
+        if (facade.mousePressed('L')) {
+            Vector<float> Pos = { facade.getMousePos(Window).x, facade.getMousePos(Window).y };
 
             for (unsigned int i = 0; i < Grass.size(); ++i) {
                 Vector<float> cellCenter = { findCentre(Grass[i].first.gGB()).x , findCentre(Grass[i].first.gGB()).y };
@@ -217,8 +221,8 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector<std::pa
         break;
     }
     case 3: {
-        if (mouse.buttonPressed('L')) {
-            Vector<float> Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
+        if (facade.mousePressed('L')) {
+            Vector<float> Pos = { facade.getMousePos(Window).x, facade.getMousePos(Window).y };
 
             for (unsigned int i = 0; i < Grass.size(); ++i) {
                 Vector<float> cellCenter = { findCentre(Grass[i].first.gGB()).x , findCentre(Grass[i].first.gGB()).y };
