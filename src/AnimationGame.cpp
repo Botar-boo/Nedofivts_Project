@@ -1,7 +1,7 @@
-#include "AnimationGame.h"
+#include "../include/AnimationGame.h"
 
 
-Animation::Animation(tImages* texture, vectorU imageCount, float switchTime) {
+Animation::Animation(userImages* texture, Vector<int> imageCount, float switchTime) {
     this->imageCount.x = imageCount.x;
     this->imageCount.y = imageCount.y;
     this->switchTime = switchTime;

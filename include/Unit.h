@@ -1,16 +1,18 @@
 #include "Additional.h"
 
+class MediatorCreepBall;
+
 class Unit {
 public:
-    Unit(tImages& Texture, vectorU imageCount, float sizeX, float sizeY);
+    Unit(userImages& Texture, Vector<int> imageCount, float sizeX, float sizeY);
     ~Unit() {}
     userRectangleShape getBody();
-    vectorF getPosition();
+    Vector<float> getPosition();
     Animation getAnimation();
 
 public:
     unsigned int Row;
-    Animation Animation;
+    Animation animation;
     bool faceRight;
 protected:
     userRectangleShape Body;

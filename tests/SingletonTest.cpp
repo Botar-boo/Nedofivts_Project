@@ -36,11 +36,11 @@ TEST_F(SingletonTestCase, Game1SetGameOverTest) {
 TEST_F(SingletonTestCase, EazyTest) {
 	Game* game1 = Game::get_instance();
 	game1->startGame(true);
-	ASSERT_EQ(true, game1->get_Hard());
+	ASSERT_EQ(true, game1->get_difficulty());
 }
 
 TEST_F(SingletonTestCase, HardTest) {
 	Game* game1 = Game::get_instance();
 	game1->startGame(false);
-	ASSERT_EQ(false, game1->get_Hard());
+	ASSERT_EQ(false, game1->get_difficulty());
 }

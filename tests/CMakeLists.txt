@@ -5,8 +5,7 @@ project(Test)
 find_package(Threads REQUIRED)
 find_package(GTest REQUIRED)
 
-include_directories("tests/")
-add_executable(${PROJECT_NAME} "tests/main.cpp" "tests/SingletonTest.cpp" "src/Game.cpp")
+add_executable(${PROJECT_NAME} "main.cpp" "SingletonTest.cpp" "../src/Game.cpp")
 target_include_directories(${PROJECT_NAME}
 	PRIVATE
 	${GTEST_INCLUDE_DIR})

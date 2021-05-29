@@ -1,23 +1,20 @@
-﻿#pragma once
-#include "Gameplay.h"
-
+#include "../include/Gameplay.h"
 
 // Logic proccesing
 
-void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>& Creeps, std::vector <std::pair<Creep, float>>& Dead, float deltaTime, MAP& Map) {
-
+void Logic(Game* currentGame, float deltaTime, MAP& Map) {
     // Tower state update
 
-    for (auto t : Towers) {
+    for (auto t : currentGame->Towers) {
         if (t->Timer > 0) {
             t->Timer -= deltaTime;
         }
         else {
-            for (unsigned int i = 0; i < Creeps.size(); i++) {
-                float deltaX = (t->getBody().gGB().left + t->getBody().gGB().width / 2) - (Creeps[i].getBody().gGB().left + Creeps[i].getBody().gGB().width / 2);
-                float deltaY = (t->getBody().gGB().top + t->getBody().gGB().height / 2) - (Creeps[i].getBody().gGB().top + Creeps[i].getBody().gGB().height / 2);
+            for (auto& creep : currentGame->Creeps){
+                float deltaX = findCentre(t->getBody().gGB()).x - findCentre(creep.getBody().gGB()).x;
+                float deltaY = findCentre(t->getBody().gGB()).y - findCentre(creep.getBody().gGB()).y;
                 if (sqrt(deltaX * deltaX + deltaY * deltaY) <= t->getArea().getRad()) {
-                    t->Fire(Creeps[i]);
+                    t->Fire(creep);
                     break;
                 }
             }
@@ -25,117 +22,96 @@ void Logic(Game* currentGame, std::vector <Tower*>& Towers, std::vector <Creep>&
     }
 
     // Creep state update
-
-    for (unsigned int i = 0; i < Creeps.size(); i++) {
-        checkDir(Creeps[i], Map.Road);
-    }
-
+    // &
     // Ball flight proccesing
-
-    for (unsigned int i = 0; i < Creeps.size(); ++i) {
-        Creeps[i].Update(deltaTime);
-        for (unsigned int j = 0; j < Creeps[i].ballsFollow.size(); ++j) {
-            Creeps[i].ballsFollow[j].Update(Creeps[i].getBody().getPos().x + Creeps[i].getBody().gGB().width / 2, Creeps[i].getBody().getPos().y + Creeps[i].getBody().gGB().height / 2, deltaTime);
-            vectorF ballPos = { Creeps[i].ballsFollow[j].getBody().getPos().x + Creeps[i].ballsFollow[j].getBody().gGB().width / 2, Creeps[i].ballsFollow[j].getBody().getPos().y + Creeps[i].ballsFollow[j].getBody().gGB().height / 2 };
-            vectorF creepPos = { Creeps[i].getBody().getPos().x + Creeps[i].getBody().gGB().width / 2, Creeps[i].getBody().getPos().y + Creeps[i].getBody().gGB().height / 2 };
-            if (epsCirclePos(ballPos, creepPos)) {
-                Creeps[i].getDamage(Creeps[i].ballsFollow[j]); //Creeps[i].setHealth(-Creeps[i].ballsFollow[j].getDamage()); 
-                Creeps[i].ballsFollow.erase(Creeps[i].ballsFollow.begin() + j);
-                --j;
-            }
-        }
-        vectorF creepPos = { Creeps[i].getBody().getPos().x + (Creeps[i].getBody().gGB().width / 2), Creeps[i].getBody().getPos().y + (Creeps[i].getBody().gGB().height / 2) };
-        vectorF endPos = { Map.Road[Map.endNumb].first.getPos().x + blockSize.x, Map.Road[Map.endNumb].first.getPos().y + blockSize.y / 2 };
-        if (epsCirclePos(creepPos, endPos)) {
-            Creeps[i].Arrived();
-            Creeps[i].setHealth(-Creeps[i].getHealth());
-            currentGame->decr_playerHealth();
-        }
+    
+    for (unsigned int i = 0; i < currentGame->Creeps.size(); i++) {
+        checkDir(currentGame->Creeps[i], Map.Road);
+        currentGame->Creeps[i].Update(deltaTime);
     }
 
     // Getting damage
 
-    for (unsigned int i = 0; i < Creeps.size(); ++i) {
-        if (Creeps[i].getHealth() <= 0) {
+    for (int i = 0; i < currentGame->Creeps.size(); i++) {
+        auto& creep = currentGame->Creeps[i];
+        Vector<float> creepPos = { findCentre(creep.getBody().gGB()).x, findCentre(creep.getBody().gGB()).y };
+        Vector<float> endPos = { Map.Road[Map.endNumb].first.getPos().x + blockSize.x, Map.Road[Map.endNumb].first.getPos().y + blockSize.y / 2 };
 
-            if (Creeps[i].isKilled()) { currentGame->set_playerGold(Creeps[i].getReward()); }
+        if (epsCirclePos(creepPos, endPos)) {
+            creep.Arrived();
+            creep.setHealth(-creep.getHealth());
+            currentGame->decr_playerHealth();
+        }
+        if (creep.getHealth() <= 0) {
 
-            Creeps[i].ballsFollow.clear();
-            Creeps[i].killCreep(Creeps, Dead, i, deltaTime);
+            if (creep.isKilled()) { currentGame->set_playerGold(creep.getReward()); }
+            creep.killCreep(currentGame->Creeps, currentGame->Dead, i, deltaTime);
         }
     }
 
     // Preparing creep death animation
 
-    for (unsigned int i = 0; i < Dead.size(); i++) {
-        Dead[i].second -= deltaTime;
-        Dead[i].first.Update(deltaTime);
-        if (Dead[i].second <= 0) {
-            auto it = Dead.begin();
-            for (unsigned int j = 0; j < i; j++) {
-                it++;
-            }
-            Dead.erase(it);
+    for (int i = 0; i < currentGame->Dead.size(); i++) {
+        auto& dead = currentGame->Dead[i];
+        dead.second -= deltaTime;
+        dead.first.Update(deltaTime);
+        if (dead.second <= 0) {
+            currentGame->Dead.erase(currentGame->Dead.begin() + i);
         }
     }
 
     // Tower animation proccesing
 
-    for (unsigned int i = 0; i < Towers.size(); i++) {
-        Towers[i]->Update(deltaTime);
+    for (auto& tower : currentGame->Towers) {
+        tower->Update(deltaTime);
     }
 }
-
 
 // Starting the gameplay and creating general objects
 
 void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSettings& gameSettings) {
     srand(static_cast <unsigned int> (time(0)));
-
+    Facade facade;
     Game* currentGame = Game::get_instance();
     currentGame->startGame(gameSettings.Hard);
-    std::vector <std::pair<Creep, float>> Dead;
-    std::vector <Tower*> Towers;
-    std::vector <Creep> Creeps;
+    int gameSpeed = 1;
+    bool gameStop = false;	
 
-    // Initialization of textures, music and font
+	// Initialization of textures, music and font
 
-    tImages tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround;
-    std::vector <tImages> Textures = {tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround};
+    userImages tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround, tJegor;
+    std::vector <userImages> Textures = { tSameer, tBatyr, tSingle, tMulti, tFreezing, tOnePunch, tGameOver, tHGround, tGrass, tVGround, tURGround, tDRGround, tULGround, tDLGround, tJegor};
 
-    const std::vector <std::string> texturePath = {"images/Sameer2.0.png",
-                                             "images/Batyr2.0.png",
-                                             "images/SingleTower.png",
-                                             "images/MultiTower.png",
-                                             "images/FreezingTower.png",
-                                             "images/OnePunchMan.png",
-                                             "images/GameOver.png",
-                                             "images/GrassGround.png",
-                                             "images/HGround.png",
-                                             "images/VGround.png",
-                                             "images/URGround.png",
-                                             "images/DRGround.png",
-                                             "images/DLGround.png",
-                                             "images/ULGround.png"};
+    const std::vector <std::string> texturePath = { "images/Sameer2.0.png",
+                                                    "images/Batyr2.0.png",
+                                                    "images/SingleTower.png",
+                                                    "images/MultiTower.png",
+                                                    "images/FreezingTower.png",
+                                                    "images/OnePunchMan.png",
+                                                    "images/GameOver.png",
+                                                    "images/GrassGround.png",
+                                                    "images/HGround.png",
+                                                    "images/VGround.png",
+                                                    "images/URGround.png",
+                                                    "images/DRGround.png",
+                                                    "images/DLGround.png",
+                                                    "images/ULGround.png",
+                                                    "images/Jegor.png" };
 
     loadTexture(Textures, texturePath);
-    userFont Font;
-    Font.loadFromFile("images/Classic.ttf");
     int buttonCheck = -1;
-    userMusic Music;
-    Music.playMusic("images/music.ogg");
-    userColor Blue = userColor(0, 0, 255, 25);
-
+    facade.CreateMusic();
+    facade.playMusic("images/music.ogg");
+    facade.CreateFont();
+    facade.loadFont("images/Classic.ttf");
     MAP Map;
-    std::vector <std::vector <int>> pseudoMap(mapSize.x, std::vector <int>(mapSize.y));
-    fillMap1(pseudoMap);
-    constructMap(Map, pseudoMap, Textures);
+    createMap(Map, gameSettings, Textures);
 
     userSprite sGameOver(Textures[6]);
     sGameOver.setPos(gameOverPosition.x, gameOverPosition.y);
 
     float deltaTime;
-    userClock Clock;
+    facade.CreateClock();
     int healthPrev = currentGame->get_playerHealth();
 
     while (Window.windowOpen()) {
@@ -147,54 +123,66 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             float releaseTime = 0.5f;
             float waitingTime = 10;
             int cnt;
-            if (currentGame->get_Hard()) cnt = 2 * currentGame->get_waveNumber() + 1;
+            if (currentGame->get_difficulty()) cnt = 2 * currentGame->get_waveNumber() + 1;
             else cnt = currentGame->get_waveNumber();
-            Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
+            Visualize(currentGame, Window, sGameOver, Map,  facade.getFont(), buttonCheck);
 
             while (waitingTime > 0) {
-
-                deltaTime = Clock.restart().asSeconds();
+                if (gameStop) {
+                    deltaTime = gameSpeed * facade.restartClock();
+                    checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
+                    continue;
+                }
+                if (currentGame->get_gameOver()) break;
+                deltaTime = gameSpeed * facade.restartClock();
                 waitingTime -= deltaTime;
                 userEvent e;
                 while (Window.pollEvent(e))
                     if (e.type == userEvent::Closed) {
                         Window.close();
-                        towerClear(Towers);
+                        towerClear(currentGame->Towers);
                         exit(0);
                     }
-                checkPress(currentGame, Window, Towers, Map.Grass, buttonCheck, Textures);
+                checkPress(currentGame, Window, Map.Grass, buttonCheck, Textures);
+                checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
 
-                for (unsigned int i = 0; i < Towers.size(); i++) {
-                    Towers[i]->Update(deltaTime);
+                for (unsigned int i = 0; i < currentGame->Towers.size(); i++) {
+                    currentGame->Towers[i]->Update(deltaTime);
                 }
-                Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
+                Visualize(currentGame, Window, sGameOver, Map, facade.getFont(), buttonCheck);
 
             }
 
             buttonCheck = -1;
 
-            while (!Creeps.empty() || !Dead.empty() || cnt != 0) {
+            while (!currentGame->Creeps.empty() || !currentGame->Dead.empty() || cnt != 0) {
+                if (gameStop) {
+                    deltaTime = gameSpeed * facade.restartClock();
+                    checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
+                    continue;
+                }
                 userEvent e;
-
                 while (Window.pollEvent(e))
                     if (e.type == userEvent::Closed) {
                         Window.close();
-                        towerClear(Towers);
+                        towerClear(currentGame->Towers);
                         exit(0);
                     }
-                deltaTime = Clock.restart().asSeconds();
-                if (cnt != 0) fillCreep(currentGame, Creeps, Map, releaseTime, deltaTime, cnt, Textures[0], Textures[1]);
-                Logic(currentGame, Towers, Creeps, Dead, deltaTime, Map);
+                checkSpeed(gameSpeed, gameStop, currentGame, deltaTime);
+                deltaTime = gameSpeed * facade.restartClock();
+                if (cnt != 0) fillCreep(currentGame, Map, releaseTime, deltaTime, cnt, Textures[0], Textures[1], Textures[14]);
+                Logic(currentGame, deltaTime, Map);
+                if (currentGame->get_gameOver()) break;
                 if (currentGame->get_playerHealth() <= 0) {
                     currentGame->switch_gameOver();
                     break;
                 }
-                Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
+                Visualize(currentGame, Window, sGameOver, Map, facade.getFont(), buttonCheck);
             }
             if (currentGame->get_gameOver()) {
-                Creeps.clear();
-                Towers.clear();
-                Dead.clear();
+                currentGame->Creeps.clear();
+                currentGame->Towers.clear();
+                currentGame->Dead.clear();
                 break;
             }
             else if (healthPrev == currentGame->get_playerHealth()) {
@@ -207,14 +195,21 @@ void Gameplay(unsigned int roundsToWin, userRenderWindow& Window, const GameSett
             currentGame->incr_waveNumber();
         }
         while (currentGame->get_gameOver()) {
+            deltaTime = gameSpeed * facade.restartClock();;
+            static float gameOverTime = 0;
+            gameOverTime += deltaTime;
+            if (gameOverTime > 5) {
+                gameOverTime = 0;
+                break;
+            }
             userEvent e;
             while (Window.pollEvent(e))
                 if (e.type == userEvent::Closed) {
                     Window.close();
-                    towerClear(Towers);
+                    towerClear(currentGame->Towers);
                     exit(0);
                 }
-            Visualize(currentGame, Window, sGameOver, Creeps, Towers, Dead, Map, Blue, buttonCheck, Font);
+            Visualize(currentGame, Window, sGameOver, Map, facade.getFont(), buttonCheck);
         }
         break;
     }

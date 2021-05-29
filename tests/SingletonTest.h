@@ -1,3 +1,3 @@
 #include <gtest/gtest.h>
-#include "../src/Game.h"
+#include "../include/Game.h"
 class SingletonTestCase : public ::testing::Test {}; 

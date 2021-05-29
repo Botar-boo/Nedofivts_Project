@@ -4,10 +4,10 @@
 
 class Tower : public Unit {
 public:
-    Tower(tImages& Texture, vectorF Pos, unsigned int Price);
+    Tower(userImages& Texture, Vector<float> Pos, unsigned int Price);
     ~Tower() {}
 public:
-    virtual void Fire(Creep& Creep);
+    virtual void Fire(Creep& creep);
 
     float getReload();
     void setReload(float Time);
@@ -26,33 +26,33 @@ private:
 
 class SingleTower : public Tower {
 public:
-    SingleTower(tImages& Texture, vectorF Pos);
+    SingleTower(userImages& Texture, Vector<float> Pos);
     ~SingleTower() {}
 
-    void Fire(Creep& Creep);
+    void Fire(Creep& creep);
 };
 
 class MultiTower : public Tower {
 public:
-    MultiTower(tImages& Texture, vectorF Pos);
+    MultiTower(userImages& Texture, Vector<float> Pos);
 
-    void Fire(Creep& Creep);
+    void Fire(Creep& creep);
 private:
     unsigned int shotCount;
 };
 
 class FreezingTower : public Tower {
 public:
-    FreezingTower(tImages& Texture, vectorF Pos);
+    FreezingTower(userImages& Texture, Vector<float> Pos);
     ~FreezingTower() {}
 
-    void Fire(Creep& Creep);
+    void Fire(Creep& creep);
 };
 
 class OnePunchTower : public Tower {
 public:
-    OnePunchTower(tImages& Texture, vectorF Pos);
+    OnePunchTower(userImages& Texture, Vector<float> Pos);
     ~OnePunchTower() {}
 
-    void Fire(Creep& Creep);
+    void Fire(Creep& creep);
 };

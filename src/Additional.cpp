@@ -1,10 +1,9 @@
-#pragma once
-#include "Additional.h"
+#include "../include/Additional.h"
 
-tImages tFireball, tSnowball, tDesolball;
+userImages tFireball, tSnowball, tDesolball;
 
 
-Ball::Ball(vectorF towerPos, int n) {
+Ball::Ball(Vector<float> towerPos, int n) {
 
     tFireball.loadTexture("images/Fireball.png");
     tSnowball.loadTexture("images/Snowball.png");
@@ -22,8 +21,8 @@ Ball::Ball(vectorF towerPos, int n) {
     this->Speed = defaultBallSpeed;
 }
 
-vectorF Ball::getPosition() {
-    vectorF pos;
+Vector<float> Ball::getPosition() {
+    Vector<float> pos;
     pos.x = this->Body.getPos().x;
     pos.y = this->Body.getPos().y;
     return pos;
@@ -61,7 +60,7 @@ float Ball::getSlow() {
 
 
 
-FireBall::FireBall(vectorF towerPos) :
+FireBall::FireBall(Vector<float> towerPos) :
     Ball(
         towerPos,
         1
@@ -71,7 +70,7 @@ FireBall::FireBall(vectorF towerPos) :
     this->setDesolation(0);
 }
 
-SnowBall::SnowBall(vectorF towerPos) :
+SnowBall::SnowBall(Vector<float> towerPos) :
     Ball(
         towerPos,
         2
@@ -81,7 +80,7 @@ SnowBall::SnowBall(vectorF towerPos) :
     this->setDesolation(0);
 }
 
-DesolBall::DesolBall(vectorF towerPos) :
+DesolBall::DesolBall(Vector<float> towerPos) :
     Ball(
         towerPos,
         3
@@ -96,7 +95,7 @@ DesolBall::DesolBall(vectorF towerPos) :
 // Animation update
 
 void Ball::Update(float xCreep, float yCreep, float deltaTime) {
-    vectorF movement = { 0.0f, 0.0f };
+    Vector<float> movement = { 0.0f, 0.0f };
     float deltaX = xCreep - (this->Body.getPos().x + this->Body.gGB().width / 2);
     float deltaY = yCreep - (this->Body.getPos().y + this->Body.gGB().height / 2);
     float Hyp = sqrt(deltaX * deltaX + deltaY * deltaY);

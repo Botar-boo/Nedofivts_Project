@@ -1,4 +1,4 @@
-name: SingletonTest
+name: BuildTest
 
 on:
   push:
@@ -6,10 +6,15 @@ on:
   pull_request:
     branches: [ master, dev ]
 jobs:
-  runTest:
+  Build-ubuntu:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: "Build main project"
+        run : |
+          sudo apt-get install libsfml-dev
+          chmod +x run.sh
+          ./run.sh
       - name: "Build and run tests"
         run : |
           git clone https://github.com/google/googletest
@@ -19,8 +24,19 @@ jobs:
           make
           sudo make install
           cd ../../
-          mkdir build
-          cd build
+          cd tests
+          mkdir buildTest
+          cd buildTest
           cmake ..
           make
           ./Test
+  Build-macOs:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: "Build main project"
+        run : |
+          brew install sfml
+          chmod +x run.sh
+          ./run.sh
+          

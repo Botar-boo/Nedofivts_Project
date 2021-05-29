@@ -1,44 +1,68 @@
-﻿#include "AdditionalFunctions.h"
+#include "../include/AdditionalFunctions.h"
 
 const float Eps = 5;
 
-bool epsSqPos(vectorF Pos1, vectorF Pos2) {
+bool epsSqPos(Vector<float> Pos1, Vector<float> Pos2) {
     return (fabs(Pos2.x - Pos1.x) <= Eps && fabs(Pos2.y - Pos1.y) <= Eps);
 }
-bool epsCirclePos(vectorF Pos1, vectorF Pos2) {
+bool epsCirclePos(Vector<float> Pos1, Vector<float> Pos2) {
     return ((Pos2.x - Pos1.x) * (Pos2.x - Pos1.x) + (Pos2.y - Pos1.y) * (Pos2.y - Pos1.y) <= Eps * Eps);
+}
+
+// Find centre of object
+
+Vector <float> findCentre(Rect<float> rect) {
+    Vector <float> posCentre = { rect.left +  rect.width / 2, rect.top + rect.height / 2 };
+    return posCentre;
 }
 
 // Creating creep wave at the begining of the round
 
-void fillCreep(Game* currentGame, std::vector<Creep>& Creeps, MAP& Map, float& releaseTime, float deltaTime, int& cnt, tImages& tSameer, tImages& tBatyr) {
+void fillCreep(Game* currentGame, MAP& Map, float& releaseTime, float deltaTime, int& cnt, userImages& tSameer, userImages& tBatyr, userImages& tJegor) {
     releaseTime -= deltaTime;
     if (releaseTime <= 0 && cnt != 0) {
         releaseTime = deadTime;
-        if (cnt % 2 == 1)
-            Creeps.push_back(Batyr(tBatyr, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
-        else
-            Creeps.push_back(Sameer(tSameer, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first));
+        if (cnt % 3 == 0) {
+            Jegor Jegor(tJegor, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first);
+            MediatorCreepBall m;
+            Jegor.setMediator(&m);
+            currentGame->Creeps.push_back(Jegor);
+        }
+            
+        else if (cnt % 3 == 1) {
+            Batyr Batyr(tBatyr, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first);
+            MediatorCreepBall m;
+            Batyr.setMediator(&m);
+            currentGame->Creeps.push_back(Batyr);
+        }
+        else {
+            Sameer Sameer(tSameer, currentGame->get_waveNumber(), Map.Road[Map.startNumb].first);
+            MediatorCreepBall m;
+            Sameer.setMediator(&m);
+            currentGame->Creeps.push_back(Sameer);
+        }
         cnt--;
     }
 }
 
 // Rendering map, units, additional objects
-void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::vector <Creep>& Creeps, std::vector <Tower*>& Towers, std::vector <std::pair<Creep, float>>& Dead, MAP& Map, userFont& Font) {
+void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userFont Font) {
     drawMap(App, Map);
 
-    for (unsigned int i = 0; i < Creeps.size(); ++i) {
-        App.userDraw(Creeps[i].getBody());
-        for (unsigned int j = 0; j < Creeps[i].ballsFollow.size(); ++j) { App.userDraw(Creeps[i].ballsFollow[j].getBody()); }
+    for (unsigned int i = 0; i < currentGame->Creeps.size(); ++i) {
+        App.userDraw(currentGame->Creeps[i].getBody());
+        for (unsigned int j = 0; j < currentGame->Creeps[i].getBalls().size(); ++j) { 
+            App.userDraw(currentGame->Creeps[i].getBalls()[j].getBody()); 
+        }
     }
 
 
-    for (unsigned int i = 0; i < Dead.size(); ++i) {
-        App.userDraw(Dead[i].first.getBody());
+    for (unsigned int i = 0; i < currentGame->Dead.size(); ++i) {
+        App.userDraw(currentGame->Dead[i].first.getBody());
     }
 
-    for (unsigned int i = 0; i < Towers.size(); ++i) {
-        App.userDraw(Towers[i]->getBody());
+    for (unsigned int i = 0; i < currentGame->Towers.size(); ++i) {
+        App.userDraw(currentGame->Towers[i]->getBody());
     }
     userText Money("Gold: " + std::to_string(currentGame->get_playerGold()), Font, fontSize1);
     userText Lives("Health: " + std::to_string(currentGame->get_playerHealth()), Font, fontSize2);
@@ -55,15 +79,17 @@ void Draw(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::v
 }
 
 // Visualization of objects
-void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, std::vector <Creep>& Creeps, std::vector <Tower*>& Towers, std::vector <std::pair<Creep, float>>& Dead, MAP& Map, userColor& Blue, int& buttonCheck, userFont& Font) {
+void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, MAP& Map, userFont Font, int& buttonCheck) {
     App.userClear();
-    Draw(currentGame, App, sGameOver, Creeps, Towers, Dead, Map, Font);
+    Facade facade;
+    facade.CreateColor(0, 0, 255, 25);
+    Draw(currentGame, App, sGameOver, Map, Font);
     if (buttonCheck != -1) {
         userCircleShape Area;
         Area.setOrigin(originPosition.x, originPosition.y);
         Area.setRadius(towerRadius);
         Area.setPos(static_cast<float>(userMouse::getPosition(App).x), static_cast<float>(userMouse::getPosition(App).y));
-        Area.setFillColor(Blue);
+        Area.setFillColor(facade.getColor());
         App.userDraw(Area);
     }
     App.userDisplay();
@@ -71,36 +97,60 @@ void Visualize(Game* currentGame, userRenderWindow& App, userSprite sGameOver, s
 
 
 // Check keypress
-void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*>& Towers, std::vector<std::pair<userSprite, bool>>& Grass, int& buttonCheck, std::vector <tImages>& Textures) {
-    userKeyboard kBoard;
-    if (kBoard.checkButtonPressed('Q')) {
+void checkSpeed(int& gameSpeed, bool& gameStop, Game* game, float deltaTime) {
+    Facade facade;
+    facade.CreateKeyboard();
+    static float speedTime = 0, stopTime = 0;
+    speedTime += deltaTime;
+    stopTime += deltaTime;
+    if (facade.buttonPressed('A') && speedTime >= 0.2) {
+        gameSpeed = 3 - gameSpeed;
+        speedTime = 0;
+    }
+    if (facade.buttonPressed('B') && stopTime >= 0.2) {
+        gameStop = !gameStop;
+        stopTime = 0;
+    }
+    if (facade.buttonPressed('D')) {
+        game->set_gameOver();
+    }
+}
+
+void checkPress(Game* currentGame, userRenderWindow& Window, std::vector<std::pair<userSprite, bool>>& Grass, int& buttonCheck, std::vector <userImages>& Textures) {
+    Facade facade;
+    facade.CreateKeyboard();
+    if (facade.buttonPressed('Q')) {
         buttonCheck = 0;
     }
-    if (kBoard.checkButtonPressed('W')) {
+    if (facade.buttonPressed('W')) {
         buttonCheck = 1;
     }
-    if (kBoard.checkButtonPressed('E')) {
+    if (facade.buttonPressed('E')) {
         buttonCheck = 2;
     }
-    if (kBoard.checkButtonPressed('R')) {
+    if (facade.buttonPressed('R')) {
         buttonCheck = 3;
     }
-    if (kBoard.checkButtonPressed('X')) {
+    if (facade.buttonPressed('X')) {
         buttonCheck = -1;
     }
-    userMouse mouse;
+    facade.CreateMouse();
     switch (buttonCheck) {
     case 0: {
-        if (mouse.buttonPressed('L')) {
-            vectorF Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
+        if (facade.mousePressed('L')) {
+            Vector<float> Pos = { facade.getMousePos(Window).x, facade.getMousePos(Window).y };
 
             for (unsigned int i = 0; i < Grass.size(); ++i) {
-                vectorF cellCenter = { Grass[i].first.gGB().left + Grass[i].first.gGB().width / 2, Grass[i].first.gGB().top + Grass[i].first.gGB().height / 2 };
-                if ((Pos.y > cellCenter.y - Grass[i].first.gGB().height / 2) && (Pos.y < cellCenter.y + Grass[i].first.gGB().height / 2) && (Pos.x > cellCenter.x - Grass[i].first.gGB().width / 2) && (Pos.x < cellCenter.x + Grass[i].first.gGB().width / 2) && Grass[i].second == false) {
-                    vectorF grassPos = { Grass[i].first.gGB().left + Grass[i].first.gGB().width / 2 - towerSize.x / 2, Grass[i].first.gGB().top + Grass[i].first.gGB().height / 2 - towerSize.y / 2 };
+                Vector<float> cellCenter = { findCentre(Grass[i].first.gGB()).x , findCentre(Grass[i].first.gGB()).y };
+                if ((Pos.y > cellCenter.y - Grass[i].first.gGB().height / 2)
+                    && (Pos.y < cellCenter.y + Grass[i].first.gGB().height / 2)
+                    && (Pos.x > cellCenter.x - Grass[i].first.gGB().width / 2)
+                    && (Pos.x < cellCenter.x + Grass[i].first.gGB().width / 2)
+                    && Grass[i].second == false) {
+                    Vector<float> grassPos = { findCentre(Grass[i].first.gGB()).x - towerSize.x / 2, findCentre(Grass[i].first.gGB()).y - towerSize.y / 2 };
                     Tower* Tower = new SingleTower(Textures[2], grassPos);
                     if (Tower->getPrice() <= static_cast <int> (currentGame->get_playerGold())) {
-                        addNewTower(currentGame, Towers, Tower);
+                        addNewTower(currentGame, Tower);
                         Grass[i].second = true;
                     }
                     else {
@@ -115,16 +165,20 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
         break;
     }
     case 1: {
-        if (mouse.buttonPressed('L')) {
-            vectorF Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
+        if (facade.mousePressed('L')) {
+            Vector<float> Pos = { facade.getMousePos(Window).x, facade.getMousePos(Window).y };
 
             for (unsigned int i = 0; i < Grass.size(); ++i) {
-                vectorF cellCenter = { Grass[i].first.gGB().left + Grass[i].first.gGB().width / 2, Grass[i].first.gGB().top + Grass[i].first.gGB().height / 2 };
-                if ((Pos.y > cellCenter.y - Grass[i].first.gGB().height / 2) && (Pos.y < cellCenter.y + Grass[i].first.gGB().height / 2) && (Pos.x > cellCenter.x - Grass[i].first.gGB().width / 2) && (Pos.x < cellCenter.x + Grass[i].first.gGB().width / 2) && Grass[i].second == false) {
-                    vectorF grassPos = { Grass[i].first.gGB().left + Grass[i].first.gGB().width / 2 - towerSize.x / 2, Grass[i].first.gGB().top + Grass[i].first.gGB().height / 2 - towerSize.y / 2 };
-                    Tower* Tower = new MultiTower(Textures[3], grassPos); //24 � 36 �������� ��������� �����
+                Vector<float> cellCenter = { findCentre(Grass[i].first.gGB()).x , findCentre(Grass[i].first.gGB()).y };
+                if ((Pos.y > cellCenter.y - Grass[i].first.gGB().height / 2)
+                    && (Pos.y < cellCenter.y + Grass[i].first.gGB().height / 2)
+                    && (Pos.x > cellCenter.x - Grass[i].first.gGB().width / 2)
+                    && (Pos.x < cellCenter.x + Grass[i].first.gGB().width / 2)
+                    && Grass[i].second == false) {
+                    Vector<float> grassPos = { findCentre(Grass[i].first.gGB()).x - towerSize.x / 2, findCentre(Grass[i].first.gGB()).y - towerSize.y / 2 };
+                    Tower* Tower = new MultiTower(Textures[3], grassPos);
                     if (static_cast <int> (Tower->getPrice()) <= static_cast <int> (currentGame->get_playerGold())) {
-                        addNewTower(currentGame, Towers, Tower);
+                        addNewTower(currentGame, Tower);
                         Grass[i].second = true;
                     }
                     else {
@@ -139,16 +193,20 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
         break;
     }
     case 2: {
-        if (mouse.buttonPressed('L')) {
-            vectorF Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
+        if (facade.mousePressed('L')) {
+            Vector<float> Pos = { facade.getMousePos(Window).x, facade.getMousePos(Window).y };
 
             for (unsigned int i = 0; i < Grass.size(); ++i) {
-                vectorF cellCenter = { Grass[i].first.gGB().left + Grass[i].first.gGB().width / 2, Grass[i].first.gGB().top + Grass[i].first.gGB().height / 2 };
-                if ((Pos.y > cellCenter.y - Grass[i].first.gGB().height / 2) && (Pos.y < cellCenter.y + Grass[i].first.gGB().height / 2) && (Pos.x > cellCenter.x - Grass[i].first.gGB().width / 2) && (Pos.x < cellCenter.x + Grass[i].first.gGB().width / 2) && Grass[i].second == false) {
-                    vectorF grassPos = { Grass[i].first.gGB().left + Grass[i].first.gGB().width / 2 - towerSize.x / 2, Grass[i].first.gGB().top + Grass[i].first.gGB().height / 2 - towerSize.y / 2 };
-                    Tower* Tower = new FreezingTower(Textures[4], grassPos); //24 � 36 �������� ��������� �����
+                Vector<float> cellCenter = { findCentre(Grass[i].first.gGB()).x , findCentre(Grass[i].first.gGB()).y };
+                if ((Pos.y > cellCenter.y - Grass[i].first.gGB().height / 2)
+                    && (Pos.y < cellCenter.y + Grass[i].first.gGB().height / 2)
+                    && (Pos.x > cellCenter.x - Grass[i].first.gGB().width / 2)
+                    && (Pos.x < cellCenter.x + Grass[i].first.gGB().width / 2)
+                    && Grass[i].second == false) {
+                    Vector<float> grassPos = { findCentre(Grass[i].first.gGB()).x - towerSize.x / 2, findCentre(Grass[i].first.gGB()).y - towerSize.y / 2 };
+                    Tower* Tower = new FreezingTower(Textures[4], grassPos);
                     if (static_cast <int> (Tower->getPrice()) <= static_cast <int> (currentGame->get_playerGold())) {
-                        addNewTower(currentGame, Towers, Tower);
+                        addNewTower(currentGame, Tower);
                         Grass[i].second = true;
                     }
                     else {
@@ -163,16 +221,20 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
         break;
     }
     case 3: {
-        if (mouse.buttonPressed('L')) {
-            vectorF Pos = { mouse.getPos(Window).x, mouse.getPos(Window).y };
+        if (facade.mousePressed('L')) {
+            Vector<float> Pos = { facade.getMousePos(Window).x, facade.getMousePos(Window).y };
 
             for (unsigned int i = 0; i < Grass.size(); ++i) {
-                vectorF cellCenter = { Grass[i].first.gGB().left + Grass[i].first.gGB().width / 2, Grass[i].first.gGB().top + Grass[i].first.gGB().height / 2 };
-                if ((Pos.y > cellCenter.y - Grass[i].first.gGB().height / 2) && (Pos.y < cellCenter.y + Grass[i].first.gGB().height / 2) && (Pos.x > cellCenter.x - Grass[i].first.gGB().width / 2) && (Pos.x < cellCenter.x + Grass[i].first.gGB().width / 2) && Grass[i].second == false) {
-                    vectorF grassPos = { Grass[i].first.gGB().left + Grass[i].first.gGB().width / 2 - towerSize.x / 2, Grass[i].first.gGB().top + Grass[i].first.gGB().height / 2 - towerSize.y / 2 };
-                    Tower* Tower = new OnePunchTower(Textures[5], grassPos); //24 � 36 �������� ��������� �����
+                Vector<float> cellCenter = { findCentre(Grass[i].first.gGB()).x , findCentre(Grass[i].first.gGB()).y };
+                if ((Pos.y > cellCenter.y - Grass[i].first.gGB().height / 2)
+                    && (Pos.y < cellCenter.y + Grass[i].first.gGB().height / 2)
+                    && (Pos.x > cellCenter.x - Grass[i].first.gGB().width / 2)
+                    && (Pos.x < cellCenter.x + Grass[i].first.gGB().width / 2)
+                    && Grass[i].second == false) {
+                    Vector<float> grassPos = { findCentre(Grass[i].first.gGB()).x - towerSize.x / 2, findCentre(Grass[i].first.gGB()).y - towerSize.y / 2 };
+                    Tower* Tower = new OnePunchTower(Textures[5], grassPos);
                     if (static_cast <int> (Tower->getPrice()) <= static_cast <int> (currentGame->get_playerGold())) {
-                        addNewTower(currentGame, Towers, Tower);
+                        addNewTower(currentGame, Tower);
                         Grass[i].second = true;
                     }
                     else {
@@ -191,9 +253,9 @@ void checkPress(Game* currentGame, userRenderWindow& Window, std::vector <Tower*
 
 // Add new tower to vector
 
-void addNewTower(Game* currentGame, std::vector <Tower*>& Towers, Tower* newTower) {
-    Towers.push_back(newTower);
-    std::sort(Towers.begin(), Towers.end(), [](Tower* Tower1, Tower* Tower2) { return Tower1->getBody().gGB().top < Tower2->getBody().gGB().top; });
+void addNewTower(Game* currentGame, Tower* newTower) {
+    currentGame->Towers.push_back(newTower);
+    std::sort(currentGame->Towers.begin(), currentGame->Towers.end(), [](Tower* Tower1, Tower* Tower2) { return Tower1->getBody().gGB().top < Tower2->getBody().gGB().top; });
     currentGame->set_playerGold(-newTower->getPrice());
 }
 
@@ -202,8 +264,8 @@ void addNewTower(Game* currentGame, std::vector <Tower*>& Towers, Tower* newTowe
 void checkDir(Creep& Creep, std::vector <std::pair<userSprite, int>>& Road) {
     int i = 0;
     for (unsigned int i = 0; i < Road.size(); i++) {
-        vectorF creepPos = { Creep.getBody().gGB().left + Creep.getBody().gGB().width / 2, Creep.getBody().gGB().top + Creep.getBody().gGB().height / 2 };
-        vectorF blockPos = { Road[i].first.gGB().left + Road[i].first.gGB().width / 2, Road[i].first.gGB().top + Road[i].first.gGB().height / 2 };
+        Vector<float> creepPos = findCentre(Creep.getBody().gGB());
+        Vector<float> blockPos = findCentre(Road[i].first.gGB());
         if (epsSqPos(creepPos, blockPos)) {
             if (Road[i].second == 6) {
                 if (Creep.getDirection() == 0) {
@@ -249,27 +311,48 @@ void towerClear(std::vector <Tower*>& Towers) {
     }
 }
 
-// Loading textures
-// Commented piece of code is needed to load .jpg files
+// Additioanl windows rendering
 
-void loadTexture(std::vector <tImages>& Textures, const std::vector <std::string>& texturePath) {
+void AdditionalWindowDraw(userRenderWindow& Window, std::vector<userSprite>& Buttons, std::vector<userSprite>& Background, std::vector<userSprite>& AddObjects) {
+    Window.userClear();
+    for (auto& Tile : Background) {
+        Window.userDraw(Tile);
+    }
+    for (auto& Button : Buttons) {
+        Window.userDraw(Button);
+    }
+    for (auto& Obj : AddObjects) {
+        Window.userDraw(Obj);
+    }
+    Window.userDisplay();
+}
+
+// Loading textures
+
+void loadAdditionalWindowTextures(std::vector <userSprite>& Buttons, const std::vector <Vector<float>>& ButtonPosition, const std::vector <std::string>& tButtonPath, std::vector <userImages>& ButtonTextures, std::vector <userSprite>& Background, const std::string tBackgroundPath, userImages& tBackground) {
+
+    tBackground.loadTexture(tBackgroundPath);
+
+    for (unsigned int i = 0; i < ButtonTextures.size(); ++i) {
+        ButtonTextures[i].loadTexture(tButtonPath[i]);
+        userSprite Button(ButtonTextures[i]);
+        Button.setPos(ButtonPosition[i].x, ButtonPosition[i].y);
+        Buttons.push_back(Button);
+    }
+
+    for (unsigned int i = 0; i < static_cast<unsigned int>(windowWidth / blockSizeX); ++i) {
+        for (unsigned int j = 0; j < static_cast<unsigned int>(windowHeight / blockSizeY); ++j) {
+            userSprite Ground(tBackground);
+            Ground.setPosition(blockSizeX * i, blockSizeY * j);
+            Background.push_back(Ground);
+        }
+    }
+}
+
+// Loading textures
+
+void loadTexture(std::vector <userImages>& Textures, const std::vector <std::string>& texturePath) {
     for (unsigned int i = 0; i < Textures.size(); ++i) {
         Textures[i].loadTexture(texturePath[i]);
     }
-    /*
-   tSameer.loadTexture("images/Sameer2.0.png");
-   tBatyr.loadTexture("images/Batyr2.0.png");
-   tSingle.loadTexture("images/SingleTower.png");
-   tMulti.loadTexture("images/MultiTower.png");
-   tFreezing.loadTexture("images/FreezingTower.png");
-   tOnePunch.loadTexture("images/OnePunchMan.png");
-   tGameOver.loadTexture("images/GameOver.png");
-   tGrass.loadTexture("images/GrassGround.png");
-   tHGround.loadTexture("images/HGround.png");
-   tVGround.loadTexture("images/VGround.png");
-   tURGround.loadTexture("images/URGround.png");
-   tDRGround.loadTexture("images/DRGround.png");
-   tDLGround.loadTexture("images/DLGround.png");
-   tULGround.loadTexture("images/ULGround.png");*/
-
 }

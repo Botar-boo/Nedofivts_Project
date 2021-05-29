@@ -1,11 +1,11 @@
-#include "Unit.h"
+#include "../include/Unit.h"
 
 
-Unit::Unit(tImages& Texture, vectorU imageCount, float sizeX, float sizeY) :
-    Animation(&Texture, imageCount, animationTime) {
+Unit::Unit(userImages& Texture, Vector<int> imageCount, float sizeX, float sizeY) :
+    animation(&Texture, imageCount, animationTime) {
     this->Row = 0;
-    vectorF size = { sizeX, sizeY };
-    this->Body.setSize(sf::Vector2f(sizeX, sizeY)); 
+    Vector<float> size = { sizeX, sizeY };
+    this->Body.setSize(sf::Vector2f(sizeX, sizeY));
     this->Body.setTexture(&Texture);
     this->faceRight = true;
 }
@@ -14,8 +14,8 @@ userRectangleShape Unit::getBody() {
     return Body;
 }
 Animation Unit::getAnimation() {
-    return Animation;
+    return animation;
 }
-vectorF Unit::getPosition() {
+Vector<float> Unit::getPosition() {
     return this->Body.getPos();
 }
